@@ -1,0 +1,1082 @@
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*================================= MACROS AND CONSTANTS ================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+@charset "utf-8";
+@link_color: #22498f;
+@text_color: black;//#ffd584;
+@text_color_darker: #ffde9f;
+ 
+.box-shadow (@x: 0, @y: 0, @blur: 10px, @alpha) {
+  @val: @x @y @blur rgba(255, 255, 255, @alpha);
+
+  box-shadow:         @val;
+  -webkit-box-shadow: @val;
+  -moz-box-shadow:    @val;
+  
+}
+
+.box-shadow-inset (@dx : 0, @dy : 0, @r : 5px, @color: black) {
+	box-shadow: inset @dx @dy @r @color;
+	-moz-box-shadow: inset @dx @dy @r @color;
+	-webkit-box-shadow: inset @dx @dy @r @color;
+}
+
+.gradient(@start_color : #880000, @end_color: #000000) {
+	background-image: -moz-linear-gradient(top, @start_color, @end_color);
+	background-image: ~"-webkit-gradient(linear, left top, left bottom, color-stop(0.0, @{start_color}), color-stop(1.0, @{end_color}))";
+	background-image: -o-linear-gradient(@start_color, @end_color);
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start_color}', endColorstr='@{end_color}')";
+}
+
+.border-radius(@r: 5px) {
+	-moz-border-radius: @r;
+	-webkit-border-radius: @r;
+	border-radius: @r;
+}
+
+.glow(@color, @radius:1px){
+	text-shadow: 1px 1px @radius @color;
+	filter: Glow(Color=@color, Strength=@radius);
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= COMMON CLASSES ==============================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+a, a:visited {
+	color: blue;
+}
+.relative{
+	position: relative;	
+	width: 100%;
+}
+
+.center{
+	position: absolute;	
+	left:50%;
+}
+
+.left{
+	position: absolute;
+	left: -500px;	
+	width: 1000px;
+}
+
+.hidden{
+    display: none;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= BASE TEMPLATE ===============================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+@mainfont: customfont;
+
+@font-face {
+ font-family: @mainfont;
+ src: url("/media/fonts/cambriaz.eot") /* EOT file for IE */
+}
+@font-face {
+ font-family: @mainfont;
+ src: url("/media/fonts/cambriaz.ttf") /* TTF file for CSS3 browsers */
+}
+
+html, body{
+	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	font-family: @mainfont;	
+}	
+
+body{
+	overflow-x: hidden;
+	overflow-y: auto;	
+}
+
+img{
+	border: solid 0px red;
+}
+
+div{
+	border: solid 0px green;
+}
+
+.background{
+	right: 0px;
+	background-color: #000;
+	height: 1200px;
+	width: 1900px;
+	margin: 0;
+	z-index: -100;
+	overflow: hidden;
+	position: absolute;		
+}
+
+.base_content{
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.copyright{
+	float: right;
+	font-size: 14px;	
+	margin-top: 150px;
+	margin-right: 20px;
+	a{
+		color: #ddd;
+	}
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= AUTH ========================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.login_control{
+	text-align: center;
+	width: 380px;
+	height: 40px;
+	background: url(/media/images/auth.png);
+	&, a {
+		font-size: 12px;
+		color: #eee;
+	}
+}
+
+.login-form{
+	min-height: 1120px;
+	background: fade(white, 70%);
+	padding: 12px;
+	width: 100%;
+    text-align: center;
+	padding-top: 64px;
+	h1{ margin: 0px;}
+	table{margin-left:200px;width:800px;}	
+	#submit{
+		display: block;
+		margin-left: auto; 
+		margin-right: auto; 
+		margin-top: 24px;
+		width: 160px;
+		height: 32px;
+	}
+	.error{ color:red; text-align: center;}
+	ul.errorlist{
+		color: red;
+		float:right;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		width: 49%;
+		li {
+			margin: 0;
+		}
+	}
+	.invitation{
+      text-align: center;
+      padding-bottom: 20px;
+    }
+	input[type=password], input[type=text]{
+		width: 49%;
+		font-size: 20px;
+		font-weight: 100;
+		color: black;
+		float: left;
+		border: solid 1px gray;
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#ffffff');
+	}
+    .register{
+		margin-top: 36px;
+        margin-left:200px;
+        a{margin-right:12px;}
+    }
+	.description{
+		color: gray;
+		width: 600px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= MAIN MENU ===================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+#mainmenu{
+	position: absolute;
+	display: block;
+	width: 100%;
+	left: 50%;	
+	.item{
+		z-index: 10;
+	}
+}
+
+#mainmenu a{
+    position: relative;
+	display: block;
+	text-align: center;	
+	width: 180px;
+}
+
+.menu-wrap{
+	position: relative;
+}
+
+#mainmenu span{
+	position: absolute;
+	display: block;
+	left: 40%;
+	top: 40%;	
+	color: @text_color_darker;
+	text-shadow: 1px 1px 1px #000;
+	filter: Glow(Color=#000, Direction=0, Strength=1);
+}
+
+#mainmenu span:hover{
+	text-shadow: 1px 1px 1px #000;
+	filter: Glow(Color=#000, Direction=0, Strength=1);
+	font-size: 1.00em;
+	color: #dfd;
+}
+
+#mainmenu #item1{
+	top: 6px;	
+	left: 332px;	
+	img{ 
+		src:url(/media/images/menu/3.png);
+	}
+	span{	
+		left: 38px;
+		top: 35px;
+		width: 100px;
+	}	
+}
+
+#mainmenu #item2{
+	top: -20px;
+	left: 258px;
+	span{
+		left: 35px;
+		top: 50px;
+	}
+}
+
+#mainmenu #item3{
+	top: -44px;
+	left: 172px;
+	span{
+		left: 45px;
+		top: 48px;
+	}
+}
+
+#mainmenu #item4{
+	top: -71px;
+	left: 82px;
+	span{
+		left: 40px;
+		top: 48px;
+	}
+}
+
+#mainmenu #item5{
+	top: -116px;
+	left: -28px;
+	span{
+		left: 40px;
+		top: 48px;
+	}
+}
+
+#mainmenu #item6{
+	top: -204px;
+	left: -184px;
+	span{
+		left: 38px;
+		top: 48px;
+	}
+}
+
+#mainmenu #item7{
+	top: -312px;
+	left: -344px;
+	span{
+		left: 50px;
+		top: 45px;
+	}
+}
+
+#mainmenu #item8{
+	top: -430px;
+	left: -486px;
+	span{
+		left: 60px;
+		top: 45px;
+	}
+}
+
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= HOME ========================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+#home_logo{
+	width: 517px;
+	height: 394px;
+	margin: auto;
+	display: block;		
+	position: relative;
+	top: 200px;	
+}
+
+#home_logo img{
+	border: none;
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= ALBUM =======================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.album-wrap{
+	position: relative;
+	left: 50%;
+}
+
+#album_content,#album_padding{
+	display: block;
+	position: relative;
+	text-align: center;
+	margin: 0px;
+	left: -142px;
+	top: 47px;
+	z-index: -1;
+}
+
+#album_content{
+	position: absolute;
+	left: -400px;
+	top: -360px;
+    img {
+        position: absolute;
+    }
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= CONTENT =====================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+#content_padding{
+	display: block;
+	position: relative;
+	text-align: center;
+	margin: 0px;
+	top: 50px;
+	z-index: -1;
+}
+
+.content-wrap {
+    position: relative;
+	left: 50%;
+    #content{
+        position: absolute;
+        display: block;
+        top: -540px;
+		left: -390px;
+        z-index: 1;	
+        width: 100%;
+        text-align: center;
+		width: 770px;
+	}
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= ABOUT =======================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+@about_color: #000;
+
+.page_about{
+    background: fade(white, 00%);
+	.caption{
+		color: @about_color;
+	}
+    h4,pre{font-family: @mainfont;}
+	.text{
+        margin-right: -10px;
+        position: relative;
+		text-align: left;
+		font-size: 16px;
+		color: @about_color;
+		word-wrap: break-word;
+		line-height: 16px;
+        .shadowed{
+          display: block;
+          color: #fff;
+          position: absolute;
+          top: -16px;
+          left: 0px;
+          z-index: -1;
+          text-shadow: 0px 0px 10px #fff, 0px 0px 10px #fff;
+          filter: Glow(Color=#fff,Strength=10.0) Alpha(opacity=25) Blur(pixelradius=1.75, enabled='true');
+        }
+	}
+	h4{
+		font-size: 18px;
+		text-align: right;
+		margin-right: 100px;
+	}	
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= PRICES ======================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.page_prices{
+	text-align: left;
+	color: @text_color;
+	z-index: 100;
+	h1{
+		font-size: 24px;
+		text-align: right;
+		margin-right: 100px;
+	}
+	#prices-scroll{
+        width: 700px; 
+	    height: 380px; 
+	    overflow: auto; 
+    
+	}
+	.prices{
+		margin-left: 10px;
+		margin-top: 30px;
+		width: 700px;
+		background-color: fade(#fff, 30%);         
+		.head{
+			font-size: 1.2em;
+			color: fade(black, 80%);
+			overflow: hidden;
+			width: 700px;
+		}
+		
+	}
+}
+.data{			
+	width: 100%;
+	.group{
+		background-color: fade(#000, 10%); 
+		font-size: 1.1em;
+		line-height: 30px;
+		color: fade(black, 80%);
+	}
+	.item{
+		color: fade(black, 50%);
+		font-weight: 100;
+		&:hover{
+			background-color: fade(#000, 50%); 
+		}
+	}
+}
+/*
+ * CSS Styles that are needed by jScrollPane for it to operate correctly.
+ *
+ * Include this stylesheet in your site or copy and paste the styles below into your stylesheet - jScrollPane
+ * may not operate correctly without them.
+ */
+
+.jspContainer
+{
+	overflow: hidden;
+	position: relative;
+    
+}
+
+.jspPane
+{
+	position: absolute;
+}
+
+.jspVerticalBar
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 16px;
+	height: 100%;
+	background: transparent;
+}
+
+.jspVerticalBar *,
+{
+	margin: 0;
+	padding: 0;
+}
+
+.jspCap
+{
+	display: none;
+}
+
+.jspTrack
+{
+	background: fade(black,10%);
+	position: relative;
+}
+
+.jspDrag
+{
+	background: fade(white,10%);
+	position: relative;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+}
+
+.jspArrow
+{
+	background: transparent;
+	text-indent: -20000px;
+	display: block;
+	cursor: pointer;
+}
+
+.jspArrow.jspDisabled
+{
+	cursor: default;
+	background: transparent;
+}
+
+.jspVerticalBar .jspArrow
+{
+	height: 26px;
+}
+
+.jspVerticalBar .jspArrow:focus
+{
+	outline: none;
+}
+
+.jspCorner
+{
+	background: #eeeef4;
+	float: left;
+	height: 100%;
+}
+
+.jspArrowUp {
+    background-image: url(/media/images/prices/arrow_up.png);
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: transparent;
+    width: 14px;
+    margin-left: 2px;    
+}
+
+.jspArrowDown {
+    background-image: url(/media/images/prices/arrow_down.png);
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: transparent;
+    width: 14px;
+    margin-left: 2px;    
+}
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+* html .jspCorner
+{
+	margin: 0 -3px 0 0;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= CONTACTS ====================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.page_contacts{	
+	text-align: left;
+	color: black;
+	z-index: 100;
+	h1{
+		font-size: 24px;
+		text-align: right;
+		margin-right: 100px;
+	}
+	h4{
+		margin: 10px 0;
+		font-weight: bolder;
+		font-size:16px;
+		line-height: 22px;
+	}
+	.container{
+		margin-left: 0px;
+		.left-container{
+			float: left;
+			width: 210px;
+			p {
+				display: block;
+				padding-left: 6px;
+				font-size: 16px;
+				line-height: 20px;
+			}
+		}
+		.separator{
+			float: left;
+			height: 380px;
+			width: 1px;
+			margin-top: 36px;
+		}
+		.right-container{
+			margin-left: 240px;
+			width: 500px;
+			height: 400px;
+			display: block;
+			line-height: 18px;
+            
+            .currentItem{border: none; border-bottom: 1px dotted gray;}
+			
+            #on-foot{ color: #44f; cursor: pointer;}            
+			.on-foot{
+				margin-top: 0px;
+				margin-bottom: 0px;
+				font-size: 15px;
+			}
+			
+            #on-car{ color: green; cursor: pointer;margin-left: 10px;}
+			.on-car{
+				margin-top: 0px;
+				margin-bottom: 0px;
+				font-size: 15px;
+			}
+			
+			.map{
+				margin-top: 10px;
+			}
+		}
+	}
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= PARTNERS ====================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.page_partners{
+    h1{
+		font-size: 24px;
+		text-align: right;
+		margin-right: 100px;
+        color: @text_color;
+	}
+	.wrap {
+		height: 80px;
+		vertical-align: middle;
+		margin-bottom: 0px;
+        margin-left: 100px;
+        //background: fade(white, 20%);
+		.mov {
+			height: 35px;
+			//background: fade(white, 20%);
+		}
+		.container {
+			height: 30px;
+			//background: fade(white, 30%);
+            text-align: left;
+		}
+		.image-wrap {
+			height: 50px;
+			width: 200px;
+			float: left;
+			position: relative;
+			top: -10px;
+			vertical-align: bottom;
+			table {
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= NEWS ========================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+.page_news{
+  position: relative;
+	color: black;
+	h1{
+		font-size: 24px;
+		text-align: right;
+		margin-right: 100px;
+	}
+	table.wrap {
+		height: 450px;
+		margin-top: 20px;
+		width: 100%;
+		td {
+			vertical-align: top;
+		}
+		
+		td.title {
+			width: 0px;
+		}
+		td.middle {
+			width: 650px;
+			.slider-wrap {
+				.slider {
+					width: 600px;
+					height: 400px;
+				}
+				.slider-item {
+					float: left;
+					width: 600px;
+					height: 400px !important;
+				}
+				width: 600px;
+				margin: auto;
+				height: 400px;
+				overflow: hidden;
+			}
+			img {
+				//max-width: 250px;
+				//max-height: 250px;
+			}
+            .title{
+              font-size: 1.2em;
+            }
+			pre {
+                color: #222;
+                font-family: @mainfont;
+                font-size: 1em;
+				height: 200px;
+				overflow: hidden;
+                word-wrap: break-word;
+                text-align: left;
+                white-space: pre-wrap;
+                white-space: -moz-pre-wrap;
+                white-space: -o-pre-wrap;
+			}
+		}
+	}
+  .arrows {
+    position: absolute;
+    top: 10px;
+    width: 160px;
+    right: 70px;
+
+    .arrow{
+      width: 30px;
+      height: 19px;
+      background: url(/media/images/news/arrow.png);
+      cursor: pointer;
+    }
+
+    .arrow-left {
+      background-position: 0px 0px;
+      float: left;
+      &.disabled {
+        background-position: 0px 19px;
+      }
+    }
+    .arrow-right {
+      background-position: 29px 0px;
+      float: right;
+      &.disabled {
+        background-position: 29px 19px;
+      }
+    }
+  }
+  .text-overlay{
+    position: absolute;
+    z-index:-1;
+    bottom: -24px;
+    left: -75px;
+    width: 905px;
+    height: 313px;
+    background: url(/media/images/news/text_overlay.png);
+    background-size: contain;
+  }
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= ONLINE ======================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.page_online{	
+	text-align: left;
+	color: #00b300;
+	z-index: 100;
+    ul{list-style-type: none; padding: 0px;margin:0px;}
+	
+	font-weight: normal;
+	h1{
+		color: black;
+		font-size: 24px;
+		text-align: right;
+		margin-right: 100px;
+		margin-bottom: 70px;
+		
+	}
+	.calendar, .vr, .entries, .measures {
+		float: left;
+	}
+    .header{
+    }
+    table.ui-datepicker-calendar a.ui-state-active {
+    	background: #FDF5CE;
+    }
+    table.ui-datepicker-calendar a.ui-state-highlight {
+        width: 30px;
+        height: 20px;
+    	background: url(/media/images/online/circle.png) no-repeat 3px 2px;
+    	border: none;
+    	color: red;
+    }
+	.container{
+		a {
+			color: inherit;
+		}
+		margin-left: 0px;
+        
+		.calendar{
+            width: 230px;
+            height: 350px;
+		}
+        .entries{
+            left: 240px;
+            width: 250px;
+            height: 350px;
+			margin: 0px 5px;
+            //background: fade(black, 10%);
+            .current-date{
+                text-align: center;
+                color: darken(@text_color, 20%);
+            }
+            ul{
+                width: 250px;
+                margin-right: -20px;
+                margin-left: auto;
+                margin-top: 10px;
+                padding: 0px;
+				.empty a, .mine a, .other a {
+					margin-left: 10px;
+				}
+                .empty{ color:lighten(green, 10%);}
+                .mine{color:darken(orange, 10%);}
+                .other{color:red;}    
+				a {
+					color: inherit;
+				}				
+                a.close {
+					margin: 0;
+                	color: red;
+                	text-decoration: none;
+                }
+            }            
+        }
+
+		.measures{
+			margin-left: 10px;
+            left: 490px;
+            width: 250px;
+            height: 350px;
+            input{width:40px;}
+            .title{ display: block; width: 240px; text-align: center; margin:auto;}
+            .prev{ float: left;}
+            .next{ float: right;}
+            .image{width: 240px; img{ display:block; margin:auto; height: 200px; margin-top: 10px;}}
+            .description{
+                font-size: 12px;
+                border: none;//1px solid red; 
+                margin: 4px; 
+                height: 60px; 
+                margin-top:0px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                padding: auto;
+                p{
+                    text-align: center;
+                    margin: auto;
+                    height: 20px;
+                }                
+            }
+            .value{ 
+                display: block; 
+                position: absolute;
+                bottom: 36px;                
+                text-align: center;
+                margin: auto;
+                right: 45px;
+                color: fade(gray, 80%);
+                input{
+                    margin: 0 10px;
+                    background: fade(white, 20%);
+                    color: white;
+                    border: none;
+                    padding: 3px;
+                }
+            }
+            .goto_form{
+                text-align:center;
+                display:block;
+                position:absolute;
+                right: 45px;
+                bottom: 10px;
+            }
+		}
+		.form{
+			position: absolute;
+            left: 490px;
+            width: 260px;
+            height: 350px;
+            //background: fade(black, 50%);
+			padding: 10px;
+            input{width:40px;}
+            .send{
+                position: absolute;
+                display: block;
+                bottom: 36px;
+                width: 100%;
+                text-align: center;
+                input{
+                    width: 200px;
+                }
+            }
+            .goto_measure{
+                text-align:center;
+                width: 100%;
+                display:block;
+                position:absolute;
+                bottom: 10px;
+            }
+		}
+	}
+  .ui-widget-content, .ui-datepicker-title{color: #333;}
+  .ui-datepicker-calendar a{color: #111;}
+
+}
+
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= CHECK =====================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+.page_check {
+    h1{
+      font-size: 24px;
+      text-align: right;
+      margin-right: 100px;
+      color: @text_color;
+    }
+	table {
+        margin-top: 60px;
+		width: 100%;
+	}
+	p, h4 {
+		margin: 0;
+		padding: 0;
+		text-align: left;
+	}
+	h4 {
+		text-align: right;
+		font-size: 24px;
+		margin-right: 50px;
+	}
+	color:black;
+	font-size: 16px;
+	line-height: 30px;
+	table h4 {
+		text-align: left;
+		font-size: 16px;
+	}
+	.left_col, .middle_col, .right_col {
+		width: 33%;
+		text-align: left;
+		vertical-align: top;
+	}
+	.middle_col, .right_col {
+		text-align: center;
+	}
+	.days {
+		font-size: 72px;
+		margin: 20px;
+		&.stage-1 {
+			color: red;
+		}
+		&.stage-2 {
+			
+		}
+		&.stage-3 {
+			color: green;
+		}
+	}
+	textarea {
+		width: 200px;
+		height: 250px;
+		background: #eee;
+		padding: 5px;
+		border: 0;
+		opacity: 0.5;
+		color: black;
+	}
+	input[type=submit] {
+		font-weight: bold;
+	}
+	.error {
+		color: #ff0000;
+		line-height: 18px;
+	}
+}
+.vr {
+	width: 2px;
+	height: 200px;
+	background: url(/media/images/check/vr.png) no-repeat;
+}
+
+
+.modal-login-form{
+  .text{
+    width: 200px;
+  }
+  .error{
+    color: red;
+  }
+  #cmdLogin{
+    width: 100px;
+    margin: 8px;
+  }
+  a{
+    margin-right: 20px;
+  }
+}

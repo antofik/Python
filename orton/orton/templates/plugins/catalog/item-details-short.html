@@ -1,0 +1,22 @@
+{% load smart_load sekizai_tags ajaxcomments_tags %}
+{% load thumbnail from sorl.thumbnail %}
+{% comment %}<div class='subcategory-caption'>{{ item.name }}</div>{% endcomment %}
+<div class='item-container-details short'>
+{% comment %}
+    <div class='item-image'>
+        <div class='chemical'><div class='background'></div><div class='caption'>{{ item.active_substance|default:"д.о." }}:</div>{{ item.chemical }}</div>
+        {% thumbnail item.image.file.name "300x400" format="PNG" as im %}
+            <img class='image' src="{{ im.url }}" alt="" />
+        {% endthumbnail %}
+    </div>
+    <div class='description short'>
+        <div class='purpose'><div class='background'></div><div class='caption'>Назначение:</div>{{ item.purpose|safe }}</div>
+        <div class='action'><div class='background'></div><div class='caption'>Действие:</div>{{ item.action|safe }}</div>
+        <div class='usage'><div class='background'></div><div class='caption'>Применение:</div>{{ item.usage|safe }}</div>
+{% endcomment %}
+        <div class='name'>{{ item.name|safe }}</div>
+        <div class='usage-direct'>{{ item.purpose|safe }}</div>
+{% comment %}
+    </div>
+{% endcomment %}
+</div>

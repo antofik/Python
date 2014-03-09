@@ -1,0 +1,63 @@
+{% extends "base_with_menu.html" %}
+
+{%block content %}
+<div class='page_prices'>
+	<h1>Прайс-лист</h1>
+	<table class='prices'>
+		 <tr>
+			<td>
+				<table class='head'>
+					<thead>
+						<tr>
+							<th>№</th>
+							<th>Наименование услуги</th>
+							<th>Стоимость работы, руб.</th>
+						</tr>
+					</thead>
+				</table>
+			</td>
+		 </tr>
+		 <tr>
+			<td>			
+				<div id="prices-scroll">
+					<table class='data'> 
+                        {% regroup items|dictsort:"category.name" by category as categories %}
+                        {% for category in categories %}
+                            <tr class='group'>
+                                <td></td>
+                                <td colspan='2'>
+                                    {{ category.grouper.name }}
+                                </td>
+                            </tr>
+                            {% for item in category.list %}
+                                <tr class='item'>
+                                    <td>{{ item.order }}</td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+					</table>
+				</div>							
+			</td>
+		</tr>		
+	</table>
+	<script type="text/javascript">
+		
+	</script>
+</div>	
+{% endblock %}
+
+{% block head %}
+     {{ block.super }}
+     <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.mousewheel.js"></script>
+     <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.jScrollPane.js"></script>
+{% endblock %}
+
+{% block jsscript %}
+	{{ block.super }}
+	$(function(){
+		$('#prices-scroll').jScrollPane({showArrows:true, scrollbarHeight: 40});
+	});	
+    
+{% endblock %}

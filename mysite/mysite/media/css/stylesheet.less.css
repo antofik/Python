@@ -1,0 +1,147 @@
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*================================= MACROS AND CONSTANTS ================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+@charset "utf-8";
+@link_color: #22498f;
+@text_color: #3a3a3a;
+ 
+.box-shadow (@x: 0, @y: 0, @blur: 10px, @alpha) {
+  @val: @x @y @blur rgba(255, 255, 255, @alpha);
+
+  box-shadow:         @val;
+  -webkit-box-shadow: @val;
+  -moz-box-shadow:    @val;
+  
+}
+
+.box-shadow-inset (@dx : 0, @dy : 0, @r : 5px, @color: black) {
+	box-shadow: inset @dx @dy @r @color;
+	-moz-box-shadow: inset @dx @dy @r @color;
+	-webkit-box-shadow: inset @dx @dy @r @color;
+}
+
+.gradient(@start_color : #880000, @end_color: #000000) {
+	background-image: -moz-linear-gradient(top, @start_color, @end_color);
+	background-image: ~"-webkit-gradient(linear, left top, left bottom, color-stop(0.0, @{start_color}), color-stop(1.0, @{end_color}))";
+	background-image: -o-linear-gradient(@start_color, @end_color);
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start_color}', endColorstr='@{end_color}')";
+}
+
+.border-radius(@r: 5px) {
+	-moz-border-radius: @r;
+	-webkit-border-radius: @r;
+	border-radius: @r;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= BASE TEMPLATE ===============================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.base_content{
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= MAIN MENU ===================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.mainmenu{
+    margin: 8px;
+    display: block;
+    text-align: center;
+    position: relative;
+    padding-bottom: 400px;
+}
+
+.mainmenu ul{
+    list-style-type: none;    
+    padding: 0px;
+    margin: 0px;
+}
+
+.mainmenu li ul{
+    display: inline;
+    position: absolute;
+    top: 60px;
+    left: 100px;
+    text-align: center;
+}
+
+.mainmenu li:hover ul{
+    display: inline;
+}
+
+.mainmenu li ul:hover{
+    display: inline;
+}
+
+.mainmenu ul li{
+    display: inline;
+}
+
+.mainmenu li a{
+    display: inline-block;
+    color: #666;
+    width: 10em;
+    padding: 23px 20px 13px 20px;
+    text-decoration: none;    
+    font-style: italic;
+    
+    background-image: url("/media/images/menu/MenuButton.png");
+    background-size: cover;
+    background-position: center center;
+}
+
+.mainmenu li li a{
+    background-image: url("/media/images/menu/MenuInnerButton.png");
+    background-size: cover;
+    background-position: center center;
+}
+
+.mainmenu li li:first-child a{
+    background-image: url("/media/images/menu/MenuInnerButtonFirst.png");
+    background-size: cover;
+    background-position: center center;
+}
+/*
+.mainmenu li li:first-child a:hover{
+    background-image: url("/media/images/menu/MenuInnerButtonFirstHovered.png");
+    background-size: cover;
+    background-position: center center;
+}
+
+.mainmenu li a:hover{  
+    color: #000;
+    font-weight: bolder;
+    background-image: url("/media/images/menu/MenuButtonHovered.png");
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

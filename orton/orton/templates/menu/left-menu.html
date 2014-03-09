@@ -1,0 +1,35 @@
+{% load menu_tags %}
+{{ current_page.navigation_extenders }}
+{% for child in children %}
+    {% ifequal child.id current_page.id %}
+        {% if child.level == 0 %}
+            {% with child as submenu %}
+                {% include "menu/submenu.html" %}
+            {% endwith %}
+        {% elif child.level == 1 %}
+            {% with child.parent as submenu %}
+                {% include "menu/submenu.html" %}
+            {% endwith %}
+        {% elif child.level == 2 %}
+            {% with child.parent.parent as submenu %}
+                {% include "menu/submenu.html" %}
+            {% endwith %}
+        {% elif child.level == 3 %}
+            {% with child.parent.parent.parent as submenu %}
+                {% include "menu/submenu.html" %}
+            {% endwith %}
+        {% elif child.level == 4 %}
+            {% with child.parent.parent.parent.parent as submenu %}
+                {% include "menu/submenu.html" %}
+            {% endwith %}
+        {% elif child.level == 5 %}
+            {% with child.parent.parent.parent.parent.parent as submenu %}
+                {% include "menu/submenu.html" %}
+            {% endwith %}
+        {% endif %}
+    {% else %}
+        {% if child.children %}
+            {% show_menu from_level to_level extra_inactive extra_active template "" "" child %}
+        {% endif %}
+    {% endifequal %}
+{% endfor %}

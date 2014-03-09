@@ -1,0 +1,97 @@
+SetErrorMessage('Connecting operator to xmpp.redhelper.ru');
+CreateOperator("o1", ('xmpp.redhelper.ru',5222), "anton1985", "qwe");
+
+SetErrorMessage('IQ Init');
+SendIq("o1", "get", "consultant:init");
+VerifyResultIq("o1", r'displayName');
+VerifyResultIq("o1", r'time');
+
+SetErrorMessage('Connecting operator to static.xmpp.redhelper.ru');
+CreateOperator("o2", ('static.xmpp.redhelper.ru',5222), "antofik1985", "qweasd");
+SetErrorMessage('IQ Init');
+SendIq("o2", "get", "consultant:init");
+VerifyResultIq("o2", r'displayName');
+VerifyResultIq("o2", r'time');
+
+SetErrorMessage('Connecting visitor');
+CreateVisitor("v1", ('xmpp.redhelper.ru',5222));
+
+SetErrorMessage('IQ Auth');
+SendIq("v1", "set", "consultant:auth", '''<client>rhlp</client>
+                                                    <clientName>rhlp</clientName>
+                                                    <os>Windows</os>
+                                                    <browser>
+                                                        <type>Explorer</type>
+                                                        <version>9</version>
+                                                    </browser>
+                                                    <browserName>Explorer 9</browserName>
+                                                    <ip>85.142.26.224</ip>
+                                                    <url>http://redhelper.ru/</url>
+                                                    <currentUrl>http://redhelper.ru/</currentUrl>
+                                                    <title>Online consultant</title>
+                                                    <currentPageTitle>Online consultant title</currentPageTitle>
+                                                    <referrer>http://ejabberd.test/</referrer>
+                                                    <visits>1</visits>
+                                                    <time>20</time><timeOnSite>20</timeOnSite>
+                                                    <currentOperator>anton1985</currentOperator>
+                                                    <viewedPages>3</viewedPages>
+                                                    <inviteState>none</inviteState>
+                                                    <chatState>chat</chatState>
+                                                    <trigger/>
+                                                    <country>Russian Federation</country>
+                                                    <region>Moscow City</region>
+                                                    <city>Moscow</city><keys/>
+                                                    <vid>{vid}</vid>
+                                                    ''');
+VerifyResultIq("v1", r'<vid>{vid}</vid>');
+
+SetErrorMessage('IQ Queue');
+SendIq("v1", "get", "consultant:queue", '''<client>rhlp</client><vid>{vid}</vid><operator>anton1985</operator><require>anton1985</require>''');
+VerifyResultIq("v1", r'operator');
+
+SetErrorMessage('IQ Ping');
+SendIq('v1', 'get', 'consultant:ping');
+
+SetErrorMessage('Message from operator to visitor');
+SendMessage("o1", "v1", "This is a test message");
+ReceiveMessage("v1", "o1", "This is a test message");
+
+SetErrorMessage('Message from visitor to operator');
+SendMessage("v1", "o1", "Hi there");
+ReceiveMessage("o1", "v1", "Hi there");
+
+SetErrorMessage('IQ Visitorlist');
+SendIq('o1', 'get', 'consultant:visitorlist');
+VerifyResultIq('o1', r'<currentOperator>anton1985</currentOperator>');
+
+SetErrorMessage('Redirect :r');
+SendMessage("o1", "v1", ":r antofik1985 please...");
+ReceiveMessage("v1", "o1", ":r antofik1985 please...");
+
+SetErrorMessage('Redirect :notify');
+ReceiveMessage("o2", "v1", ":notify redirect anton1985 please...");
+GetMessageAttribute("o2", "token");
+
+SetErrorMessage('Redirect :ok');
+SendMessage("o2", "v1", ":ok redirect anton1985", {"token":"{token}"});
+ReceiveMessage("v1", "o1", ":ok redirect anton1985");
+ReceiveMessage("o1", "v1", ":ok redirect antofik1985");
+
+SetErrorMessage('Message from visitor to operator after redirect');
+SendMessage("v1", "o1", "Hello, new operator");
+ReceiveMessage("o1", "v1", "Hello, new operator");
+
+SetErrorMessage('IQ Visitorlist');
+SendIq('o1', 'get', 'consultant:visitorlist');
+VerifyResultIq('o1', r'<currentOperator>antofik1985</currentOperator>');
+
+SetErrorMessage('IQ Operatorlist');
+SendIq('o2', 'get', 'consultant:operatorlist');
+VerifyResultIq('o1', r'antofik1985');
+VerifyResultIq('o1', r'anton1985');
+
+SetErrorMessage('IQ History');
+SendIq('o1', 'get', 'consultant:history', to='v1');
+VerifyResultIq('o1', r'This is a test message');
+VerifyResultIq('o1', r'Hello, new operator');
+

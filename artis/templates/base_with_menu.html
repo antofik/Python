@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block base_content %}
+
+{% endblock %}
+
+{% block redhelper %}
+    <link rel="stylesheet" type='text/css' href='{{ MEDIA_URL }}plugins/fancybox/jquery.fancybox.css' />
+    <script type="text/javascript" src='{{ MEDIA_URL }}plugins/fancybox/jquery.fancybox.js' ></script>
+
+    <!-- RedHelper -->
+<!-- <script id="rhlpscrtg" type="text/javascript" charset="utf-8" async="async"	src="http://web.redhelper.ru/service/main.js?c=fabricartis"></script> -->
+<!--/Redhelper -->
+{% endblock %}
+
+{% block auth %}
+	{% load authtags %}		
+	{% login_control %}
+{% endblock %}
+
+{% block album %}
+	<div id='album_padding'>
+		<img src='{{ MEDIA_URL }}images/album/padding.png' />
+	</div>
+	<div class='album-wrap'>	
+		<div id='album_content'>
+            {% for i in 123456789012|make_list %}            
+			<img src='{{ MEDIA_URL }}images/album/{{ forloop.counter }}.png' class='img{{ forloop.counter }} {% if not forloop.first %}hidden{% endif%}' />
+            {% endfor %}
+		</div>
+	</div>
+{% endblock %}      
+
+{% block jsscript %}
+    (function($) {
+      var cache = [];
+      $.preLoadImages = function() {
+        var args_len = arguments.length;
+        for (var i = args_len; i--;) {
+          var cacheImage = document.createElement('img');
+          cacheImage.src = arguments[i];
+          cache.push(cacheImage);
+        }
+      }
+    })(jQuery)
+    for (var i=1;i<13;i++){
+        jQuery.preLoadImages("{{ MEDIA_URL }}images/menu/" + i + ".png");
+    }
+    
+    var i = 1;
+
+    function hide(i){
+        $('.img'+i).fadeOut();
+    }
+    
+    window.setInterval(function(){
+        $('.img'+i).fadeOut();
+        if (i<12) {i++;} else {i=1}
+        $('.img'+i).fadeIn();
+    }, 2500);
+
+
+    var logged = {% if user.is_authenticated %}true{% else %}false{% endif %};
+
+    function showLoginWindow(){
+        $('.error').hide();
+        $.fancybox.open($('.registration-window'), {keys:{toggle : [0]}, autoSize: true});
+    }
+
+    function login(callback){
+        $.ajax({type:'POST', url:'/login', dataType:'JSON',
+            data:{'username':$('#login').val(), 'password':$('#password').val()},
+            success: function(data, textStatus, jqXHR){
+                if (data.ok){
+                    logged = true;
+                    $.fancybox.close();
+                    callback();
+                } else{
+                    $('.error').show();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $('.error').show();
+                }
+            });
+    }
+
+    function do_after_login(callback){
+        document.after_login_callback = callback;
+        if (logged){
+            callback();
+        }else{
+            showLoginWindow();
+        }
+    }
+
+    $(function(){
+        $('#cmdLogin').click(function(){
+            login(document.after_login_callback);
+        });
+    });
+
+
+{% endblock %}
+
+{% block content_sublayer %}
+	<div id='content_padding'>
+		<img src='{{ MEDIA_URL }}images/content_padding.png' />
+	</div>
+
+    <div class='registration-window hidden'>
+        <div class='modal-login-form'>
+            <p>
+                <h2 class='invitation'>Пожалуйста, укажите ваш логин и пароль</h2>
+            </p>
+
+            <p class='error hidden'>
+                Указан неверный логин или пароль
+            </p>
+
+            <table>
+                <tr>    <td>Имя пользователя:</td>  <td><input id="login" type="text"  class='text' /></td>           </tr>
+                <tr>    <td>Пароль:</td>            <td><input id="password" type="password"  class='text' /></td>    </tr>
+            </table>
+            <input type="button" id='cmdLogin' value="Войти" />
+
+            <p class="register">
+                <a href="/accounts/register">Зарегистрироваться</a>
+                <a href="/accounts/password/reset">Забыли пароль?</a>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}      
+
+{% block menu %}
+<div id='mainmenu'>
+	<a class='item' id='item1' href='/check'><img src='{{ MEDIA_URL }}images/menu/1.png' /><span>Проверить заказ</span></a>
+	<a class='item' id='item2' href='/online'><img  src='{{ MEDIA_URL }}images/menu/2.png' /><span>On-line запись</span></a>
+	<a class='item' id='item3' href='/news'><img  src='{{ MEDIA_URL }}images/menu/3.png' /><span>Новости</span></a>
+	<a class='item' id='item4' href='/partners'><img  src='{{ MEDIA_URL }}images/menu/4.png' /><span>Партнёры</span></a>
+	<a class='item' id='item5' href='/contact'><img  src='{{ MEDIA_URL }}images/menu/5.png' /><span>Контакты</span></a>
+	<a class='item' id='item6' href='/prices'><img  src='{{ MEDIA_URL }}images/menu/6.png' /><span>Прайс-лист</span></a>
+	<a class='item' id='item7' href='/shop'><img  src='{{ MEDIA_URL }}images/menu/7.png' /><span>Магазин</span></a>
+	<a class='item' id='item8' href='/about'><img  src='{{ MEDIA_URL }}images/menu/8.png' /><span>О нас</span></a>
+</div>
+{% endblock %}
+
+{% block copyright %}
+	<div class='copyright'>
+		<a href='http://asprogram.com'>"АС Програм", 2012г.</a>
+	</div>
+{% endblock %}

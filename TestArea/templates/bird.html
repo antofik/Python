@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+    </style>
+    <script type="text/javascript" src="../media/js/coffee-script.js"></script>    
+    <script type='text/javascript'>
+    </script>
+    <script type='text/coffeescript'>
+
+        class point
+            constructor: (@x, @y, @z) ->
+
+            rotate: (x, y, z) ->
+                x1 = x*Math.cos(@world.alpha) + y*Math.sin(@world.alpha)
+                y1 = x*Math.sin(@world.alpha) - y*Math.cos(@world.alpha)
+
+            getX: ->
+                @x + @world.x
+
+            getY: ->
+                @y + @world.y
+
+            moveTo: (world)->
+                x = @getX()
+                y = @getY()
+                @ctx.moveTo(x, y)
+
+            lineTo: (world)->
+                x = @getX()
+                y = @getY()
+                @ctx.lineTo(x, y)
+
+        class world
+            constructor: (@x, @y, @z, @theta, @alpha) ->
+
+        class bird
+            x: 500
+            y: 500            
+            head: new point(0,-5,0)
+            rshoulder: new point(3,10,0)
+            rwing: new point(40,20,0)
+            rbody: new point(2,20,0)
+            rtail: new point(5,32,0)
+            mtail: new point(0,25,0)            
+            ltail: new point(-5,32,0)
+            lbody: new point(-2,20,0)
+            lwing: new point(-40,20,0)
+            lshoulder: new point(-3,10,0)
+
+            constructor: ->
+                @canvas = document.getElementById('canvas')
+                @ctx = @canvas.getContext('2d')
+                @world = new world(500, 500, 500, 0, 0)
+                @list = [@head, @rshoulder, @rwing, @rbody, @rtail, @mtail, @ltail, @lbody, @lwing, @lshoulder]
+                for item in @list
+                    item.ctx = @ctx
+                    item.world = @world
+
+            render: ->
+                @ctx.globalAlpha = 0.5
+                @ctx.fillStyle = 'blue'
+                @ctx.beginPath()                
+                @lshoulder.moveTo()
+                for item in @list
+                    item.lineTo()
+                @ctx.closePath()
+                @ctx.stroke()
+
+                @ctx.fill()
+
+        bird = new bird()
+        bird.render()
+    </script>
+</head>
+<body>
+    <canvas id='canvas' width='1000' height='1000'></canvas>
+</body>
+</html>

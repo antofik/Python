@@ -1,0 +1,42 @@
+<form class='feedback' action="/feedback/" method="POST">
+    {% csrf_token %}
+    <div>Представьтесь</div>
+    <input name="name">
+    <div>Телефон для связи</div>
+    <input name="phone">
+    <div>Оставьте комментарий</div>
+    <textarea name="comment"></textarea>
+    <div><input type="checkbox" name="recall">Заказать звонок</div>
+    <button class='btn btn-success submit'>Отправить</button>
+</form>
+
+<script type="text/javascript">
+    $(".feedback").submit(function(e){
+        if ($('.feedback input[name=name]').val().length<3){
+            alert('Пожалуйста, представьтесь');
+            return false;
+        }
+        if ($('.feedback input[name=phone]').val().length<3){
+            alert('Укажите телефон, чтобы мы могли вам перезвонить');
+            return false;
+        }
+        if ($('.feedback textarea').val().length<3){
+            alert('Введите комментарий');
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            data: $('.feedback').serialize(),
+            url: "/feedback/",
+            cache: false,
+            dataType: "html",
+            success: function(json, textStatus) {
+                $(".feedback").html("<h3>Ваш запрос успешно отправлен, и будет в ближайшее время рассмотрен</h3>");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('Ошибка при отправлении запроса. Пожалуйста, обратитесь к администратору');
+            }
+        });
+        return false;
+    });
+</script>

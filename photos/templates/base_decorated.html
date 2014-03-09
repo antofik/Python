@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block base-content %}
+
+
+{% load thumbnail %}
+
+<div class="container decorator">
+    <div class="row">
+        <div class="span12 toolbar">
+			{% block toolbar-top %} {% endblock %}
+        </div>
+    </div>    
+	{% block content %} {% endblock %}
+	
+    <div class="row">
+        <div class="span12 toolbar">
+			{% block toolbar-bottom %} {% endblock %}
+			<div class='feedback'>
+				<a href='http://mfst.pro'>МФСТ PRO</a>, 2012<br/>
+				<span>О проблемах пишите нам на почту </span><a href='mailto:contact@mfst.pro'>contact@mfst.pro</a>
+			</div>
+        </div>
+    </div>    
+</div>	
+    
+{% endblock %}

@@ -1,0 +1,26 @@
+﻿{% extends "base.html" %}
+
+{% block auth %}
+	<div class='login-form'>
+		<p>
+			<h1 class='invitation'>Пожалуйста, укажите ваш логин и пароль</h1>			
+		</p>
+		
+		{% if error %}
+			<p class='error'>
+				Указан неверный логин или пароль
+			</p>		
+		{% endif %}
+		
+		<form action="" method="post">
+			<table>
+				{{ form.as_table }}
+			</table>
+			<input type='submit' id='submit' value='Войти' />
+		</form>
+		
+		<p class='description'>
+			После входа под вашим личным паролем вы сможете сделать заказ, записаться на примерку, и многое-многое-многое другое. Вобщем, вам сплошные плюсы. Так что, не теряйте времени. Входите, и заказывайте!
+		</p>
+	</div>
+{% endblock %}

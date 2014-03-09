@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{%block content %}
+
+<form action='/createrepository' method='post'>
+<ul style='color:red'>
+	{% for error in errors %}
+		<li>{{ error }}</li>
+	{% endfor %}
+</ul>
+<p>
+	{{ success }}
+</p>
+<p>
+	Repository name: <input type='text' name='name' />
+</p>
+<p>	
+	User set: 
+	<select style='width:100px' name='userset'>
+		{% for userset in usersets %}		
+		<option value='{{userset}}'>{{userset|default:"Default"}}</option>
+		{% endfor %}
+	</select>
+</p>
+<p>
+	<input type='submit' value='Create' />
+</p>
+
+</form>
+
+{% endblock %}

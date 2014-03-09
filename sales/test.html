@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>validate before upload by Lance Zhang</title>
+    <script type="text/javascript">
+    
+          
+      var right_type=new Array(".gif",".jpg",".jpeg",".png",".bmp");
+      var oFileChecker;
+    
+      function Initialize(){
+          
+          oFileChecker = document.getElementById("fileChecker");
+
+        oFileChecker.onreadystatechange = function ()
+        {
+            if (oFileChecker.readyState == "complete")
+            {
+                CheckFileSize();
+            }
+        }
+    }
+
+      function   CheckFileSize()
+      {
+        var limit = document.getElementById("fileSizeLimit").value * 1024;
+        var width = document.getElementById("widthLimit").value ;
+        var height = document.getElementById("heightLimit").value;
+     
+
+        if (oFileChecker.fileSize > limit)
+        {
+            alert("FileSize :"+oFileChecker.fileSize+"byte--too large!");
+        }
+        else
+        {
+            alert("FileSize :"+oFileChecker.fileSize+"byte--ok");
+        }
+     
+
+        if(  oFileChecker.height> height)
+        {
+            alert("ImageHeight :"+oFileChecker.height+"--too height!");
+        }
+        else
+        {
+            alert("ImageHeight :"+oFileChecker.height+"--ok");
+        }
+        if(oFileChecker.width> width)
+        {
+            alert("ImageWidth :"+oFileChecker.width+"--too width!");
+        }
+        else
+        {
+            alert("ImageWidth :"+oFileChecker.width+"--ok");
+        }
+            return false;
+      }
+
+
+
+    function changeSrc(filePicker)
+     {
+        if(!checkImgType(filePicker.value))
+        {
+            alert("the file type is not correct");
+            return;
+        }
+        oFileChecker.src = filePicker.value;
+     }
+    
+    function checkImgType(fileURL)
+    {
+        var right_typeLen=right_type.length;
+        var imgUrl=fileURL.toLowerCase();
+        var postfixLen=imgUrl.length;
+        var len4=imgUrl.substring(postfixLen-4,postfixLen);
+        var len5=imgUrl.substring(postfixLen-5,postfixLen);
+        for (i=0;i<right_typeLen;i++)
+        {
+            if((len4==right_type[i])||(len5==right_type[i]))
+            {
+                return true;
+            }
+        }
+    }    
+
+
+
+    </script>
+    
+</head>
+<body style="font-family:Calibri" onload='Initialize()'>
+    <form name="Myform">
+    <p>
+        <font color="red" size="6">File type :gif,jpg,jpeg,png,bmp</font></p>
+    <p>
+        File Size limit:
+        <input type="text" size="4" value="100" name="fileSizeLimit" id="fileSizeLimit" />
+        K</p>
+    <p>
+        Image Height Limit: <input type="text" size="4" value="100" name="heightLimit" id="heightLimit" />
+    </p>
+    <p>
+        Image Width Limit: <input type="text" size="4" value="100" name="widthLimit" id="widthLimit" />
+    </p>
+    <p>
+        <input type="file" name="photo" onchange="changeSrc(this)" />
+        Image Preview<img src="about:blank" id="fileChecker" name="fileChecker" alt="test" />
+    </p>
+    <p>
+        <input type="submit" value="submit">
+    </p>
+    </form>
+
+
+
+
+</body>
+</html>

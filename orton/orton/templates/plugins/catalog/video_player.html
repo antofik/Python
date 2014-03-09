@@ -1,0 +1,8 @@
+{% load smart_load sekizai_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% thumbnail item.image.file.name size crop="center" format="PNG" as im %}
+<video width="{{ width }}" height="{{ height }}" style='max-width: {{ width }}px; max-height: {{ height }}px;' controls="controls" poster="{{ im.url }}">
+    <source src="{{ item.video.file.url }}" />
+</video>
+{% endthumbnail %}

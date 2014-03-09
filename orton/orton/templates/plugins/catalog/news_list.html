@@ -1,0 +1,64 @@
+{% extends "plugins/catalog/base_articles.html" %}
+{% load smart_load %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block articles-content %}
+    <div class='news-list'>
+        <div class='title'>Новости</div>
+        {% for item in items %}
+            <div class='item{% if forloop.counter > 5 %} hidden{% endif %}'>
+                <div class='preview'>
+                    <div>
+                        <span class="date">{{ item.date_added|date:"d M Y"|default:"15 Янв 2013" }}</span>
+                    </div>
+                    <a href="{{ item.get_absolute_url }}">
+                        <div class='image-wrapper'>
+                            {% thumbnail item.image.file.name "170x120" format="PNG" as im %}
+                                <img class='image' src="{{ im.url }}" alt="" />
+                            {% endthumbnail %}
+                        </div>
+                    </a>
+                </div>
+                <div>
+                    <a href="{{ item.get_absolute_url }}" class='caption'>{{ item.name }}</a>
+                </div>
+                <span class='description'>{{ item.short_description }}</span>
+{% comment %}
+                <div class='items'>
+                    {% for preparat in item.items.all %}
+                        {% if forloop.first %}
+                            <span class='title'>Связанные препараты: </span>
+                        {% endif %}
+                        <a href="{{ preparat.get_absolute_url }}">{{ preparat }}</a>{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                </div>
+{% endcomment %}
+                <div class='info'>
+                    <a class='read-more' href="{{ item.get_absolute_url }}">Подробнее</a>
+                </div>
+            </div>
+        {% endfor %}
+        {% if items|length > 5 %}
+            <div>
+                <a href='javascript:void(0)' class='more-items'>Показать ещё</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        $(function(){
+            var current = 5;
+            var max = {{ items|length }};
+            $('.more-items').click(function(e){
+                e.preventDefault();
+                for(var i=0;i<5;i++){
+                    current++;
+                    $('.news-list .item.hidden:first').removeClass('hidden');
+                }
+                if (current>=max){
+                    $('.more-items').remove();
+                }
+            });
+        });
+    </script>
+{% endblock %}

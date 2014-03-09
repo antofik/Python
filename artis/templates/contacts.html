@@ -1,0 +1,68 @@
+﻿{% extends "base_with_menu.html" %}
+
+{% block jsscript %}
+    {{ block.super }}
+    
+    $(function(){
+        $('#on-foot').click(function(){
+            $('.on-car').hide();
+            $('.on-foot').show();
+
+            $('#on-car').removeClass('currentItem');
+            $('#on-foot').addClass('currentItem');
+        });
+        $('#on-car').click(function(){
+            $('.on-foot').hide();
+            $('.on-car').show();
+
+            $('#on-car').addClass('currentItem');
+            $('#on-foot').removeClass('currentItem');
+        });
+    });
+
+{% endblock %}
+
+{%block content %}
+<div class='page_contacts'>
+	<h1>Контакты</h1>
+	
+	<div class='container'>
+		<div class='left-container'>
+			<h4>Пишите:</h4>
+			<p>contact@fabricartis.ru</p>
+			<h4>Звоните:</h4>
+			<p>+7(909)160-28-52</p>
+			<p>+7(909)160-28-74</p>
+            <a href="/check">Задать вопрос</a>
+			<h4>Мы работаем:</h4>
+			<p>С ПН по ПТ с 9:00 до 20:00</p>
+            <p>СБ-ВС - по договоренности</p>
+		</div>
+		<div class='separator vr'></div>
+		<div class='right-container'>
+			<h4>Приезжайте:</h4>
+			<p> г. Москва, ул.Южнопортовая д. 5, стр. 2-4-11</p>
+			<div class='tab'>
+                <span id='on-foot' class='currentItem'>Пешком</span>
+                <span id='on-car'>На машине</span>
+            </div>
+			<p class='on-foot'>
+				<span>Из м. Кожуховская, прямо до светофора, перейти ул. Трофимова и сразу налево перейти ул. Южнопортовую. Далее направо по тротуару 30 метров, повернуть налево, следовать до проходной по указателям фитнесса "Зебра". После проходной первый подъезд слева, 3 этаж.</span>
+			</p>
+			<p class='on-car' style='display:none'> 	
+				<span>Подъезд со стороны 2-го Южнопортового проезда, т.к. на ул. Южнопортовой на нашем участке одностороннее движение. Огибаем авторынок вокруг, следуя по указателям фитнесса "ЗЕБРА" на столбах. После проходной первый подъезд <br/>слева, 3 этаж.</span>
+			</p>
+			<div class='map'>
+                <div id="ymaps-map-id_1347480277623518820803" style="width: 500px; height: 250px;"></div>
+                <script type="text/javascript">function fid_1347480277623518820803(ymaps) {var map = new ymaps.Map("ymaps-map-id_1347480277623518820803", {center: [37.68834848419676, 55.70618204038603], zoom: 16, type: "yandex#map"});map.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#satellite", "yandex#hybrid", "yandex#publicMap"]));map.geoObjects.add(new ymaps.Placemark([37.68885874424461, 55.707430806866945], {balloonContent: ""}, {preset: "twirl#blueDotIcon"})).add(new ymaps.Polyline([[37.68442173019897, 55.7081084226216], [37.68667478577145, 55.70539449816137], [37.69021530167112, 55.70459482360525], [37.691395473637684, 55.70632743105257], [37.68912096039304, 55.70636377863432], [37.68746871963987, 55.70632743105257], [37.6889707566882, 55.70724822599129]], {balloonContent: ""}, {strokeColor: "33cc00", strokeWidth: 5, strokeOpacity: 0.5})).add(new ymaps.Polyline([[37.68568236843596, 55.70635469174207], [37.68595058933743, 55.7060699680431], [37.68644411579619, 55.7061911273186], [37.6862831832553, 55.70633651795119], [37.68662650600919, 55.70637286552444], [37.68748481289398, 55.706378923450025], [37.68820364490994, 55.706839323033996], [37.68896539227018, 55.70729063049649]], {balloonContent: ""}, {strokeColor: "00339a", strokeWidth: 5, strokeOpacity: 0.5}));};</script>
+                <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU&onload=fid_1347480277623518820803"></script>
+			</div>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+{% endblock %}

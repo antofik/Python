@@ -1,0 +1,23 @@
+{% extends "plugins/catalog/base_articles.html" %}
+{% load smart_load %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block articles-content %}
+    <div class='article-catalog-item-detalis'>
+        <div class='preview'>
+            <div class="date">{{ item.date_added|date:"d M Y" }}</div>
+            {% thumbnail item.image.file.name "300x210" format="PNG" as im %}
+                <img class='image' src="{{ im.url }}" alt="" />
+            {% endthumbnail %}
+        </div>
+        <div class='article'>
+            <div class='title'>{{ item.name }}</div>
+            <div>
+                {{ item.description|safe }}
+            </div>
+        </div>
+        <div class='terminator'>
+            <a href='{{ item.get_absolute_url_of_list }}'>Все советы специалистов</a>
+        </div>
+    </div>
+{% endblock %}

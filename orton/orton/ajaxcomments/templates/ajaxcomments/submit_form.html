@@ -1,0 +1,121 @@
+{% load sekizai_tags comments %}
+
+<div style="clear:both"></div>
+<div class='comments comments{{ item.id }}'>
+    <div class='caption'>
+        {% get_comment_count for item as comment_count %}
+        <span class='comment-count'>Отзывы ({{ comment_count }})</span>
+        <a class='show-all-comments' href="javascript:void(0);"><img src='/media/images/main/arrow-down.png' /></a>
+        <a id="inline" class='fancybox ' href="#data"><span class='do-comment'>Оставить отзыв</span></a>
+    </div>
+
+    {% get_comment_list for item as comment_list %}
+    <ul class='items'>
+    {% for comment in comment_list %}
+        <li class='{% if forloop.counter > 3 %}hidden{% endif %}'>
+            <span class='fio'>{{ comment.user_name|default_if_none:"Гость" }}</span>
+            ▪
+            <span class='profession'>{{ comment.profession|default_if_none:"Гость" }}</span>
+            <br/>
+            <div class='text text{{ comment.id }}' data-full='{{ comment.comment }}'>{{ comment.comment|truncatewords:20 }}</div>
+            {% if comment.comment|wordcount > 20 %}
+            <div class='read-more-container'>
+                <a href="#" data-target='text{{ comment.id }}' class='read-more'>Показать весь комментарий</a>
+            </div>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+    {% if comment_list|length > 3 %}
+    <a class="show-all-comments">Показать все</a>
+    {% endif %}
+
+    <div class='hidden template'>
+        <li>
+            <span class='fio'>{fio}</span>
+            ▪
+            <span class='profession'>{profession}</span>
+            <br/>
+            <div class='text'>{comment}</div>
+        </li>
+    </div>
+
+    <div style="display:none">
+        <div id="data">
+            {% get_comment_form for item as form %}
+            <form id='comment-form' action="{% comment_form_target %}" method="post">
+                {% csrf_token %}
+                <div>Имя:</div>
+                <input type="text" name="name" />
+                <div>Профессия:</div>
+                <input type="text" name="profession" placeholder="Укажите вашу профессию" />
+                <div>Комментарий:</div>
+                <textarea name="comment" class='form-comment' placeholder="Укажите ваш комментарий"></textarea>
+                <input type="hidden" name="email" value="guest@orton.ru" />
+                {{ form.content_type }}
+                {{ form.object_pk }}
+                {{ form.timestamp }}
+                {{ form.security_hash }}
+                <input type="button" class="submit" value="Добавить комментарий">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".fancybox").fancybox({'margin':40,'showCloseButton':true, 'enableEscapeButton':true});
+    });
+    $(function(){
+        $('.comments{{ item.id }} .read-more').click(function(e){
+            e.preventDefault();
+            var id = $(this).data('target');
+            var text = $('.comments{{ item.id }} .' + id);
+            text.html(text.data('full'));
+            $(this).remove();
+        });
+        $('.comments{{ item.id }} .do-comment').click(function(e){
+            var scope = $('.comments{{ item.id }}');
+
+        });
+        $('.comments{{ item.id }} .show-all-comments').click(function(e){
+            e.preventDefault();
+            var text = $('.comments{{ item.id }} .items li').removeClass('hidden');
+            $('.comments{{ item.id }} .show-all-comments').remove();
+        });
+        $('.comments{{ item.id }} .submit').click(function(){
+            var scope = $('.comments{{ item.id }}');
+            var comment_value = $('#comment-form .form-comment').val();
+            var profession_value = $('#comment-form input[name=profession]').val();
+            var fio_value = $('#comment-form input[name=name]').val();
+            if (profession_value.length<3){
+                alert('Введите профессию');
+                return;
+            }
+            if (fio_value.length<3){
+                alert('Введите ваше имя');
+                return;
+            }
+            if (comment_value.length<3){
+                alert('Введите комментарий');
+                return;
+            }
+            $.fancybox.close();
+            $.ajax({
+                type: "POST",
+                data: $('#comment-form').serialize(),
+                url: "{% comment_form_target %}",
+                cache: false,
+                dataType: "html",
+                success: function(html, textStatus) {
+                    var template = $('.template', scope)[0].innerHTML;
+                    var value = template.replace('{comment}', comment_value).replace('{profession}', profession_value).replace('{fio}', fio_value);
+                    $('.items', scope).append(value);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('Ошибка при отправлении комментария. Пожалуйста, обратитесь к администратору');
+                }
+            });
+        });
+    });
+</script>

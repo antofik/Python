@@ -1,0 +1,17 @@
+
+ !!! You should restart console in order to launch 'syncdb' 
+ For unknown reason syncdb otherwise fails: possibly console should load settings
+  
+
+3.3.2.1. Fresh install
+
+Run:
+    python manage.py syncdb --all
+    python manage.py migrate --fake
+
+The first command will prompt you to create a super user. Choose ‘yes’ and enter appropriate values.
+3.3.2.2. Upgrade
+
+Run:
+    python manage.py syncdb
+    python manage.py migrate

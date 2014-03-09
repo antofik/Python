@@ -1,0 +1,42 @@
+<div class='menu'>
+    <ul>
+        {% for category in categories %}
+            <li class='category {% if category.selected %}selected{% endif %}'>
+                <a href="{{ category.get_absolute_url }}">
+                    <span class='caption'>{{ category.name }}</span>
+                {% if category.description_page %}
+                    <span class='help'>
+                        <a href="{{ category.description_page.get_absolute_url }}" class='mark link'>?</a>
+                    </span>
+                {% elif category.description %}
+                    <div class='help'><span class='mark'>?</span><div class='description'><div class='caption'>Описание</div><div class='user-text'>{{ category.description|safe }}</div></div></div>
+                {% endif %}
+                </a>
+                {% if category.active %}
+                <ul>
+                    {% for subcategory in category.subcategories %}
+                        <li class='subcategory {% if subcategory.selected %}selected{% endif %}'>
+                            <a href="{{ subcategory.get_absolute_url }}">
+                                <span class='caption'>{{ subcategory.name }}</span>
+                            {% if subcategory.description_page %}
+                                <span class='help'>
+                                    <a href="{{ subcategory.description_page.get_absolute_url }}" class='mark link'>?</a>
+                                </span>
+                            {% elif subcategory.description %}
+                                <div class='help'>
+                                    <span class='mark'>?</span>
+                                    <div class='description'>
+                                        <div class='caption'>Описание</div>
+                                        <div class='user-text'>{{ subcategory.description|safe }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

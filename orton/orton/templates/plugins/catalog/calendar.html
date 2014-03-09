@@ -1,0 +1,99 @@
+{% load smart_load catalog_tags sekizai_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+<div class='calendar'>
+
+<div class='header-container'>
+    <table class='header' data-spy="affix" data-offset-top="140" style='top: 0px;'>
+        <thead>
+            <tr>
+                <th>Препарат</th>
+                {% for month in monthes %}
+                <td>{{ month|month_name }}</td>
+                {% endfor %}
+            </tr>
+        </thead>
+    </table>
+</div>
+<table class='content'>
+    <thead>
+    <tr style='visibility: collapse;'>
+        <th>Препарат</th>
+        {% for month in monthes %}
+            <td>{{ month|month_name }}</td>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% regroup items|dictsort:"main_category.orderindex" by main_category as categories %}
+    {% for category in categories %}
+        <tr class="calendar-category">
+            <td colspan="100">
+                <span class="caption">{{ category.grouper.name }}</span>
+            </td>
+        </tr>
+        {% for item in category.list %}
+            <tr class='calendar-item {% if forloop.counter0|divisibleby:2 %}even{% endif %}'>
+                <th>
+                {% thumbnail item.image.file.name "96x96" format="PNG" as im %}
+                    <a href="{{ item.get_absolute_url }}">
+                        {% comment %}<img class='image ' src="{{ im.url }}" alt="" />{% endcomment %}
+                        <span class='name'>{{ item.name }}</span>
+                    </a>
+                {% endthumbnail %}
+                </th>
+                {% for month in item.calendar.monthes %}
+                    {% if forloop.counter0 in monthes %}
+                    <td>
+                        {% if month %}
+                            <div class='leaf-container'>
+                                <div class='image-container'>
+                                    <img class="leaf" src="{{ MEDIA_URL }}images/main/leaf-selected.png" />
+                                </div>
+                                <div class='hint'>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>{% comment %}<span class='name'>{{ item.name }}</span>{% endcomment %}</td>
+                                                <td><span class='month'>{{ forloop.counter0|month_name:"when" }}</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                {% thumbnail item.image.file.name "96x96" format="PNG" as im %}
+                                                <td style='width:{{ im.width }}px'>
+                                                        <img class='image ' src="{{ im.url }}" alt="" style='min-width:{{ im.width }}px;height:{{ im.height }}px' />
+                                                </td>
+                                                {% endthumbnail %}
+                                                <td class='description-cell'><span class='description'>{{ month|safe }}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </td>
+                    {% endif  %}
+                 {% empty %}
+                    {% for month in monthes %}
+                        <td></td>
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        {% endfor %}
+</tbody></table>
+</div>
+
+{% addtoblock "js" %}
+    <script type="text/javascript">
+        $(function(){
+           $('.leaf-container').mouseenter(function(){
+               $('.hint', this).show();
+           });
+           $('.leaf-container').mouseleave(function(){
+               $('.hint', this).hide();
+           });
+        });
+    </script>
+{% endaddtoblock %}

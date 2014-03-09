@@ -1,0 +1,45 @@
+{% extends "plugins/catalog/base_catalog.html" %}
+
+{% load smart_load sekizai_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block catalog-content %}
+    <div class='content'>
+        <div class='header'>
+            <span>Продукция</span>
+        </div>
+        {% for item in items %}
+            {% ifchanged item.category.full_name %}
+                <div class='subcategory'>
+                    {{ item.category.full_name }}
+                </div>
+            {% endifchanged %}
+            <div class='item-container'>
+                <div class='item-image'>
+                    <div class='caption{% if item.name|length > 20 %} long-caption{% endif %}'>{{ item.name }}</div>
+                    {% thumbnail item.image.file.name "240x400" format="PNG" as im %}
+                        <a href="{{ item.get_absolute_url }}">
+                            <img class='image ' src="{{ im.url }}" alt="" />
+                        </a>
+                    {% endthumbnail %}
+                </div>
+                <div class='description-container'>
+                    <table class='description'>
+                        <tr class='purpose'><td><div class='caption'>Назначение:</div>{{ item.purpose|safe }}</td></tr>
+                        <tr class='action'><td><div class='caption'>Действие:</div>{{ item.action|safe }}</td></tr>
+                    </table>
+                </div>
+                <div class='details'><a href="{{ item.get_absolute_url }}">Подробнее</a></div>
+            </div>
+
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% addtoblock "js" %}
+    <script type="text/javascript">
+        $(function(){
+        });
+    </script>
+{% endaddtoblock %}

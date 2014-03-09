@@ -1,0 +1,114 @@
+{% load smart_load sekizai_tags ajaxcomments_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+<div class='subcategory-caption'>{% firstof item.category.full_name item.category.name %}</div>
+<div class='item-container-details'>
+    <div class='caption'>{{ item.name }}</div>
+    <div class='item-image'>
+        {% thumbnail item.image.file.name "300x400" format="PNG" as im %}
+            <img class='image' src="{{ im.url }}" alt="" />
+        {% endthumbnail %}
+        <br />
+        <img class='image' src="{{ item.description_image.url }}" />
+    </div>
+    <div class='description'>
+        <div class='chemical'><div class='background'></div><div class='caption'>{{ item.active_substance|default:"д.о." }}:</div>{{ item.chemical }}</div>
+        <div class='purpose'><div class='background'></div><div class='caption'>Назначение:</div>{{ item.purpose|safe }}</div>
+        <div class='action'><div class='background'></div><div class='caption'>Действие:</div>{{ item.action|safe }}</div>
+        <div class='usage'><div class='background'></div><div class='caption'>Применение:</div>{{ item.usage|safe }}</div>
+    </div>
+    <div class='meterials-divisor' style='clear:both'></div>
+    {% if full %}
+    {% with videos=item.videos.all articles=item.articles.all related_items=item.category.items.all %}
+    <div>
+        <div class='videos-articles'>
+            {% if videos or articles %}
+            <div>
+                {% if videos %}
+                <a href="javascript:void(0);" data-show='.videos-container' data-hide='.tab-container' data-parent='.videos-articles' class='custom-tab {% if videos %}default{% endif %}'>Видеоматериалы</a>
+                {% endif %}
+                {% if articles %}
+                <a href="javascript:void(0);" data-show='.articles-container' data-hide='.tab-container' data-parent='.videos-articles' class='custom-tab {% if articles and not videos %}default{% endif %}'>Статьи</a>
+                {% endif %}
+            </div>
+            <div class='line'></div>
+            <div class='tab-container videos-container'>
+                <ul class='videos jcarousel-skin-tango'>
+                {% for video in videos %}
+                    <li class='video-item'>
+                        <a href="{{ video.get_absolute_url }}">
+                            {% thumbnail video.image.file.name "120x80" crop="center" format="PNG" as im %}
+                            <img width='120' height='80' src="{{ im.url }}" alt="" style='width:120px;height:80px;' />
+                            {% endthumbnail %}
+                        </a>
+                        <div class='name'>{{ video.name }}</div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class='tab-container articles-container'>
+                <ul class='articles jcarousel-skin-tango'>
+                {% for article in articles %}
+                    <li class='article-item'>
+                        <a href="{{ article.get_absolute_url }}">
+                            {% thumbnail article.image.file.name "120x80" crop="center" format="PNG" as im %}
+                            <img width='120' height='80' src="{{ im.url }}" alt="" style='width:120px;height:80px;' />
+                            {% endthumbnail %}
+                        </a>
+                        <div class='name'>{{ article.name }}</div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% if related_items.count > 1 %}
+        <div class='related-items'>
+            <div>
+                <span class='title'>Ещё продукция из этой категории</span>
+            </div>
+            <div class='line'></div>
+            <ul class='jcarousel-skin-tango'>
+                {% for related in related_items %}
+                    {% ifnotequal related.id item.id  %}
+                        <li>
+                            <a href="{{ related.get_absolute_url }}">
+                                {% thumbnail related.image.file.name "120x120" format="PNG" as im %}
+                                <img src="{{ im.url }}" alt="" />
+                                {% endthumbnail %}
+                            </a>
+                            {% comment %}<div class='name'>{{ related.name }}</div>{% endcomment %}
+                        </li>
+                    {% endifnotequal %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endwith %}
+    {% render_comment_form item %}
+    {% endif %}
+</div>
+
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.carousel.min.js"></script>{% endaddtoblock %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ MEDIA_URL }}plugins/jcarousel/jquery.jcarousel.min.js"></script>{% endaddtoblock %}
+{% addtoblock "css" %}<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/jcarousel/tango/skin.css" media="all" />{% endaddtoblock %}
+
+<script type="text/javascript">
+    function show_tab(tab){
+        var parent = $(tab).data('parent');
+        var show =  $(tab).data('show');
+        var hide =  $(tab).data('hide');
+        $(parent + ' ' + hide).hide();
+        $(parent + ' ' + show).show();
+    }
+
+    $(function() {
+        var scope = $('.item-container-details');
+        $('.jcarousel-skin-tango', scope).jcarousel({'scroll':1});
+        $('.custom-tab').click(function(){
+            show_tab(this);
+        });
+        $('.custom-tab.default').each(function(){show_tab(this);});
+    });
+</script>

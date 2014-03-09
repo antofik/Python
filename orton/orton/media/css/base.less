@@ -1,0 +1,56 @@
+@color: #333;
+@main-menu-color: #eee;
+@main-menu-selected-color: #cff8c1;
+@main-menu-hover-color: #cff8c1;
+@main-menu-font-size: 1.2em;
+@main-submenu-font-size: 1.0em;
+
+.full-width{
+    width: 100%;
+}
+
+.gradient(@start_color : #880000, @stop: #008800, @end_color: #000000) {
+    background-image: -moz-linear-gradient(top, @start_color, @end_color, @stop);
+    background-image: ~"-webkit-gradient(linear, left top, left bottom, color-stop(0.0, @{start_color}), color-stop(0.5, @{stop}), color-stop(1.0, @{end_color}))";
+    background-image: linear-gradient(to bottom, @start_color 0%, @stop 50%, @end_color 100%);
+    filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start_color}', endColorstr='@{end_color}')";
+}
+
+.gradient1_3(@start_color : #880000, @stop: #008800, @end_color: #000000) {
+    background-image: -moz-linear-gradient(top, @start_color, @end_color, @stop);
+    background-image: ~"-webkit-gradient(linear, left top, left bottom, color-stop(0.0, @{start_color}), color-stop(0.33, @{stop}), color-stop(1.0, @{end_color}))";
+    background-image: linear-gradient(to bottom, @start_color 0%, @stop 33%, @end_color 100%);
+    filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start_color}', endColorstr='@{end_color}')";
+}
+
+.gradient2_3(@start_color : #880000, @stop: #008800, @end_color: #000000) {
+    background-image: -moz-linear-gradient(top, @start_color, @end_color, @stop);
+    background-image: ~"-webkit-gradient(linear, left top, left bottom, color-stop(0.0, @{start_color}), color-stop(0.66, @{stop}), color-stop(1.0, @{end_color}))";
+    background-image: linear-gradient(to bottom, @start_color 0%, @stop 66%, @end_color 100%);
+    filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start_color}', endColorstr='@{end_color}')";
+}
+
+.gradient(@start_color : #880000, @end_color: #000000) {
+    background-image: -moz-linear-gradient(top, @start_color, @end_color);
+    background-image: ~"-webkit-gradient(linear, left top, left bottom, color-stop(0.0, @{start_color}), color-stop(1.0, @{end_color}))";
+    background-image: -o-linear-gradient(@start_color, @end_color);
+    background-image: linear-gradient(@start_color, @end_color);
+    filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{start_color}', endColorstr='@{end_color}')";
+}
+
+.box-shadow (@x: 0, @y: 0, @blur: 1px, @color: #000) {
+    box-shadow: @arguments;
+    -moz-box-shadow: @arguments;
+    -webkit-box-shadow: @arguments;
+}
+
+.rounded-corners (@radius: 5px) {
+    border-radius: @radius;
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+}
+
+.glow(@color, @radius:1px){
+    text-shadow: 0px 0px @radius @color;
+    filter: Glow(Color=@color, Strength=@radius);
+}

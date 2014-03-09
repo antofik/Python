@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery-color/jquery.color.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/center.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/top.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/themes/default.js"></script>
+{% endblock %}
+
+{% block jsscript %}
+    <script type="text/javascript">
+        $(function(){
+            $('.btn-send-list').click(function(){
+                clearResults();
+                showBusyIndicator(sendByList);
+            });
+            $('.btn-send-db').click(function(){
+                clearResults();
+                showBusyIndicator(sendByDb);
+            });
+        });
+
+        function clearResults(){
+            $('.result').remove();
+        }
+
+        function showBusyIndicator(callback){
+            jQuery = $;
+            noty({
+                text: 'Подождите, выполняется рассылка...',
+                layout:'center',
+                type:'information',
+                callback: {afterShow: function(){callback();}},
+                closeWith: [],
+                modal: true});
+        }
+
+        function sendByList(){
+            $.ajax({type:'POST', url:'/emailer', dataType:'JSON',
+                data:{'type':'list', 'emails':$('.emails').val(), 'message':$('.message').val(), 'subject':$('.subject').val()},
+                success: function(data, textStatus, jqXHR){
+                    $.noty.closeAll();
+                    var vlaue;
+                    var failed = "";
+                    var okСount = 0;
+                    var failedCount = 0;
+                    for(var i in data){
+                        var result = data[i];
+                        if (result.ok=="ok"){
+                            okСount++;
+                            value = "<div class='result'>" + result.email + "</div>";
+                            $('.results-ok').append(value);
+                        }else{
+                            failedCount++;
+                            value = "<div class='result'>" + result.email + " - " + result.reason + "</div>";
+                            $('.results-failed').append(value);
+                            failed += result.email + "\n";
+                        }
+                    }
+                    $('.emails').val(failed);
+                    if (okСount>0) {
+                        $('.results-ok .results-caption').removeClass('hidden');
+                    }
+                    if (failedCount>0) {
+                        $('.results-failed .results-caption').removeClass('hidden');
+                    }
+                    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    $.noty.closeAll();
+                    alert('Ошибка расслыки');
+                }
+            });
+        }
+
+        function sendByDb(){
+            $.ajax({type:'POST', url:'/emailer', dataType:'JSON',
+                data:{'type':'db', 'emails':$('.emails').val(), 'message':$('.message').val(), 'subject':$('.subject').val()},
+                success: function(data, textStatus, jqXHR){
+                    $.noty.closeAll();
+                    var vlaue;
+                    var failed = "";
+                    var okСount = 0;
+                    var failedCount = 0;
+                    for(var i in data){
+                        var result = data[i];
+                        if (result.ok=="ok"){
+                            okСount++;
+                            value = "<div class='result'>" + result.email + "</div>";
+                            $('.results-ok').append(value);
+                        }else{
+                            failedCount++;
+                            value = "<div class='result'>" + result.email + " - " + result.reason + "</div>";
+                            $('.results-failed').append(value);
+                            failed += result.email + "\n";
+                        }
+                    }
+                    $('.emails').val(failed);
+                    if (okСount>0) {
+                        $('.results-ok .results-caption').removeClass('hidden');
+                    }
+                    if (failedCount>0) {
+                        $('.results-failed .results-caption').removeClass('hidden');
+                    }
+                    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    $.noty.closeAll();
+                    alert('Ошибка расслыки');
+                }
+            });
+        }
+    </script>
+ {% endblock %}
+
+{% block base-content %}
+    <div class='container emailer-page'>
+        <div class='row-fluid'>
+            <h4>Укажите тему рассылки</h4>
+        </div>
+        <div class='row-fluid'>
+            <div class='span6'>
+                <label>
+                    <input type="text" class='subject' placeholder='Новости Каталога бальных платьев'/>
+                </label>
+            </div>
+        </div>
+        <div class='row-fluid'>
+            <h4>Укажите сообщение для рассылки</h4>
+        </div>
+        <div class='row-fluid'>
+            <div class='span6'>
+                <label>
+                    <textarea class='message'></textarea>
+                </label>
+            </div>
+        </div>
+        <div class='row-fluid'>
+            <h4>Укажите список email-ов, каждый email с новой строки</h4>
+        </div>
+        <div class='row-fluid'>
+            <div class='span6'>
+                <label>
+                    <textarea class='emails'></textarea>
+                </label>
+            </div>
+        </div>
+        <div class='row-fluid'>
+            <button class="btn btn-large btn-warning btn-send-list" >Рассылка по списку</button>
+            <button class="btn btn-large btn-danger btn-send-db" >Рассылка всем из базы</button>
+        </div>
+        <br/><br/><br/>
+        <div class='row-fluid results-ok'>
+            <h4 class='results-caption hidden'>Рассылка прошла успешно</h4>
+        </div>
+        <br/><br/><br/>
+        <div class='row-fluid results-failed'>
+            <h4 class='results-caption hidden'>Рассылка не удалась</h4>
+        </div>
+    </div>
+{% endblock %}

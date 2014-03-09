@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=9" />
+	<title>Fabric Artis</title>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/stylesheet.css" media="all" />	
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/jquery.ui/css/ui-lightness/jquery-ui-1.8.22.custom.css" media="all" />	
+	<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.7.2.js"></script>
+	{% if debug and f %}<script type="text/javascript" src="{{ MEDIA_URL }}js/cssrefresh.js"></script>{% endif %}
+	<script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery.ui/js/jquery-ui-1.8.22.custom.min.js"></script>
+    {% block redhelper %} {% endblock %}
+	{% block head %} {% endblock %}
+    <script type="text/javascript">
+
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' }
+        });
+
+        {% block jsscript %} {% endblock %}
+    </script>
+    {% block jsscript2 %} {% endblock %}
+</head>
+<body>
+	  <div>
+		  <div class='relative'>
+  			  <div class='background'></div>	  
+			  <img src='{{ MEDIA_URL}}images/background.jpg' class='background' />
+		  </div>
+		  <div>
+			  <div class='relative'><div class='center'><div class='left'>
+				{% block auth %}{% endblock %}
+			  </div></div></div>
+			  {% block base_content %}{% endblock %}      
+			  <div class='menu-wrap'>
+				{% block menu %}{% endblock %}      
+			  </div>
+			  {% block album %}{% endblock %}      
+			  
+			  {% block content_sublayer %}{% endblock %}    
+			  <div class="content-wrap">
+				  <div id='content'>
+					{% block content %}{% endblock %}      
+				  </div>
+			  </div>
+			  
+			  {% block copyright %}
+			  {% endblock %}
+		  </div>
+      </div>
+	  <script type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-36287380-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+		</script>
+</body>
+</html>

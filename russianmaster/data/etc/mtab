@@ -1,0 +1,8 @@
+﻿/dev/sda3 / ext3 rw 0 0
+tmpfs /lib/init/rw tmpfs rw,nosuid,mode=0755 0 0
+proc /proc proc rw,noexec,nosuid,nodev 0 0
+sysfs /sys sysfs rw,noexec,nosuid,nodev 0 0
+udev /dev tmpfs rw,mode=0755 0 0
+tmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0
+devpts /dev/pts devpts rw,noexec,nosuid,gid=5,mode=620 0 0
+/dev/sda2 /boot ext3 rw 0 0

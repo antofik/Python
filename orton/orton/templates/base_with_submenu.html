@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load cms_tags menu_tags %}
+
+{% block base_content %}
+    {% include "header.html" %}
+
+    <div class='main-page'>
+        <div class='shadow-box'></div>
+        <img src="{{ MEDIA_URL }}images/main/background-centre.jpg" class='background-center'>
+        {% block content %} {% endblock %}
+        <div class='content'>
+            <div class='top' style='clear:both'>
+                {% block content-top %} {% endblock %}
+                {% placeholder top %}
+                <span class='left'>{% placeholder top-left %}</span><span style='clear:both'></span>
+                <span class='right'>{% placeholder top-right %}</span><span style='clear:both'></span>
+            </div>
+            <div class='left-sub-menu'>
+                {% show_menu 0 3 3 3 "menu/left-menu.html" %}
+            </div>
+            <div class='submenu-content'>
+                <div class='middle' style='clear:both'>
+                    {% block content-middle %} {% endblock %}
+                    {% placeholder middle %}
+                    <span class='left'>{% placeholder middle-left %}</span><span style='clear:both'></span>
+                    <span class='right'>{% placeholder middle-right %}</span><span style='clear:both'></span>
+                </div>
+            </div>
+            <div class='bottom' style='clear:both'>
+                {% block content-bottom %} {% endblock %}
+                {% placeholder bottom %}
+                <span class='left'>{% placeholder bottom-left %}</span><span style='clear:both'></span>
+                <span class='right'>{% placeholder bottom-right %}</span><span style='clear:both'></span>
+            </div>
+            <div style='clear:both'></div>
+        </div>
+    </div>
+
+    {% include "footer.html" %}
+{% endblock %}

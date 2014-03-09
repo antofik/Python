@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru-RU">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+	<meta http-equiv="Content-Language" content="ru-RU" />
+	<title>Регистрационная форма</title>
+	<script src="/rm_reg.js" type="text/javascript" charset="utf-8"></script>
+	<script><!--cmp--></script>
+	<link href="/rm_reg.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<form id="regform" onsubmit="return false">
+<fieldset><legend>Танцоры:</legend>
+ <table align="center">
+    <tr>
+		<th class="first"></th>
+		<th>Фамилия</th>
+		<th>Имя</th>
+		<th>Дата рождения</th>
+    </tr>
+    <tr><td><label for="mFaml" class=req>Партнер</label>*</td>
+		<td><input id="mFaml"    maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="mName"    maxlength="64" type=text  spellcheck="false" autocomplete="off"/></td>
+		<td><input id="mBirtDay" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+    </tr>
+    <tr>
+		<td><label for="wFaml" class=req>Партнерша</label>*</td>
+		<td><input id="wFaml"    maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="wName"    maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="wBirtDay" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+    </tr>
+
+ </table>
+</fieldset>
+
+<fieldset><legend>Клуб</legend>
+ <table align="center">
+    <tr>
+		<th class="first"></th>
+		<th>Название</th>
+		<th>Город, обл. или регион</th>
+		<th>Страна</th>
+    </tr>
+    <tr>
+		<td><label for="clName1" class=req>Клуб 1</label>*</td>
+		<td><input id="clName1" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="clArea1" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="clCntr1" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+    </tr>
+    <tr>
+		<td><label for="clName2">Клуб 2</label></td>
+		<td><input id="clName2" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="clArea2" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="clCntr2" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+    </tr>
+ </table>
+</fieldset>
+
+<fieldset><legend>Тренеры</legend>
+ <table align="center">
+    <tr>
+		<th class="first"></th>
+		<th>Фамилия</th>
+		<th>Имя</th>
+		<th></th>
+    </tr>
+    <tr>
+		<td><label for="trFaml1" class=req>Тренер 1</label>*</td>
+		<td><input id="trFaml1" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="trName1" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td rowspan="3"><div id=wait>wait...</div></td>
+    </tr>
+    <tr>
+		<td><label for="trFaml2">Тренер 2</label></td>
+		<td><input id="trFaml2" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="trName2" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+    </tr>
+    <tr>
+		<td><label for="trFaml3">Тренер 3</label></td>
+		<td><input id="trFaml3" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+		<td><input id="trName3" maxlength="64" type=text spellcheck="false" autocomplete="off"/></td>
+    </tr>
+ </table>
+</fieldset>
+
+</form>
+</body>
+</html>

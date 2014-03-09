@@ -1,0 +1,3 @@
+http://demo.simplacommerce.com/simpla/index.php?module=OrdersAdmin
+http://www.webmasters.by/images/articles/css/circle-hover-effects/index7.html
+http://www.azavea.com/blogs/labs/2011/04/jquery-star-rating-with-django-ratings/

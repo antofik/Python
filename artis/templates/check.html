@@ -1,0 +1,83 @@
+﻿{% extends "base_with_menu.html" %}
+
+{% block jsscript2 %}
+    <script type="text/javascript">
+        $(function(){
+            $('#cmdAsk').click(post_message);
+            $('#cmdCheck').click(check_order);
+        });
+
+        function post_message(){
+            do_after_login(function(){
+                $.ajax({type:'POST', url:'/check/message', dataType:'JSON',
+                    data:{'message':$('#txtQuestion').val()},
+                    success: function(data, textStatus, jqXHR){
+                        $('.question').html('<span style="color:blue">Сообщение успешно отправлено</span>');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        $('.question').html('<span style="color:red">Ошибка при отправлении сообщения</span>');
+                    }
+                });
+            });
+        }
+
+        function check_order(){
+            do_after_login(function(){
+                $.ajax({type:'POST', url:'/check/order', dataType:'JSON',
+                    data:{'code':$('#txtCode').val()},
+                    success: function(data, textStatus, jqXHR){
+                        if (data.ok){
+                            if (data.days>0){
+                                $('#txtDays').html("<span style='color:green'>Ваш заказ будет готов через " + data.days + " дней</span>");
+                            }else{
+                                $('#txtDays').html("<span style='color:green'>Ваш заказ уже готов</span>");
+                            }
+                        }else{
+                            $('#txtDays').html("<span style='color:red'>К сожалению, заказ с таким номером не найден</span>");
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        $('#txtDays').html("<span style='color:red'>К сожалению, заказ с таким номером не найден</span>");
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}
+
+{%block content %}
+	<div class="page_check">
+		<h1>Проверить заказ</h1>
+		<table>
+			<tr>
+				<td class="left_col">
+					<h4>Пишите:</h4>
+					<p>contact@fabricartis.ru</p>
+					<h4>Звоните:</h4>
+					<p>+7(909)160-28-52</p>
+					<p>+7(909)160-28-74</p>
+					<h4>Мы работаем:</h4>
+					<p>С ПН по ПТ с 9:00 до 20:00</p>
+				</td>
+				<td><div class="vr"></div></td>
+				<td class="middle_col">
+					<div>
+						Номер заказа: 
+						<input type="text" style="margin-left: 5px;" size="8" id="txtCode" value="" />
+						<a id="cmdCheck" href="#">Проверить заказ</a>
+					</div>
+                    <div id="txtDays"></div>
+				</td>
+				<td><div class="vr"></div></td>
+				<td class="right_col">
+					<div class='question'>
+                        Задать вопрос
+                        <textarea id="txtQuestion"></textarea>
+                        <a id="cmdAsk" href="#">Задать вопрос</a>
+					</div>
+				</td>
+			</tr>
+		
+		</table>
+	</div>
+{% endblock %}

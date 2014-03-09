@@ -1,0 +1,9 @@
+{% if use_vkontakte or use_facebook or use_odnoklassniki or use_moimir %}
+    <div class='socials'>
+        <span class='title'>Мы в:</span>
+        {% if use_vkontakte %}<a href='{{ url_vkontakte }}'><div class='image vkontakte'></div></a>{% endif %}
+        {% if use_facebook %}<a href='{{ url_facebook }}'><div class='image facebook'></div></a>{% endif %}
+        {% if use_odnoklassniki %}<a href='{{ url_odnoklassniki }}'><div class='image odnoklassniki'></div></a>{% endif %}
+        {% if use_moimir %}<a href='{{ url_moimir }}'><div class='image moimir'></div></a>{% endif %}
+    </div>
+{% endif %}

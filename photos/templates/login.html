@@ -1,0 +1,142 @@
+{% extends "base_decorated.html" %}
+
+{% block head %}
+   {{ block.super }}
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/center.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/top.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/themes/default.js"></script>
+{% endblock %}
+
+{% block jsscript %}
+    {{ block.super }}
+    <script type="text/javascript">
+
+    function showBusyIndicator(callback, email){
+        noty({
+            text: 'Подождите, идёт обработка запроса...',
+            layout:'center',
+            type:'information',
+            callback: {afterShow: function(){callback(email);}},
+            closeWith: [],
+            modal: true});
+    }
+
+    function error_message(text){
+        try{
+            jQuery = $;
+            noty({
+                text: text,
+                layout:'center',
+                type:'error',
+                timeout: 3000,
+                modal: true});
+        }catch(e){
+            alert(text);
+        }
+    }
+
+    function success_message(text){
+        try{
+            noty({
+                text: text,
+                layout:'top',
+                type:'success',
+                timeout: 3000,
+                modal: true});
+        }catch(e){
+            console.log(e);
+            alert(text);
+        }
+    }
+
+    function sendRemindCode(email){
+        $.ajax({type:'POST', url:'/remind_access_code/{{ id }}', dataType:'JSON',
+            data:{'email':email},
+            success: function(data, textStatus, jqXHR){
+                $.noty.closeAll();
+                if (data.ok){
+                    success_message('Код был отправлен вам на почту. Желаем удачи!');
+                }else if (data.invalid_email){
+                    error_message('Вы указали неверный почтовый адрес');
+                } else{
+                    error_message('Не удаётся отправить письмо. Свяжитесь с нами по адресу contact@mfst.pro и опишите проблему');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $.noty.closeAll();
+                error_message('Не удаётся отправить письмо. Свяжитесь с нами по адресу contact@mfst.pro и опишите проблему');
+            }
+        });
+    }
+
+    $(function(){
+        $('.forget').click(function(e){
+			e.preventDefault();
+            jQuery = $;
+            noty({
+				text:"<div>Укажите почтовый ящик, на который зарегистрировано это платье</div><br/><div class='input-prepend'><span class='add-on'><i class='icon-envelope'></i></span><input type='email' class='remind-email' placeholder='your@email.ru' /></div>",
+				layout:'center', 
+				type:'information',
+				modal: true,
+				buttons: [
+					{addClass: 'btn btn-primary', text: 'Выслать', onClick: function($noty) {
+                        $.noty.closeAll();
+                        showBusyIndicator(sendRemindCode, $('.remind-email').val());
+					  }
+					},
+					{addClass: 'btn btn-danger', text: 'Отмена', onClick: function($noty) {
+                        $.noty.closeAll();
+					  }
+					}
+				]
+			});
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block toolbar-top %}
+	<a href='/' class='btn-tryit btn btn-info btn-large'>Вернутся к списку</a>
+	<a href='/dress/new' class='btn-create btn btn-primary btn-large'>Разместить объявление</a>
+{% endblock %}
+
+{% block toolbar-bottom %}
+	<a href='/' class='btn-tryit btn btn-info btn-large'>Вернутся к списку</a>
+	<a href='/dress/new' class='btn-create btn btn-primary btn-large'>Разместить объявление</a>
+{% endblock %}
+
+{% block content %}
+
+{% load thumbnail %}
+
+    <div class="row data login-form">
+        <div class="offset1 span10">            
+            <div class='well'>
+                Введите код доступа
+            </div>
+            <div class='error'>
+                {{ error|default_if_none:'' }}
+            </div>
+            <form enctype="multipart/form-data" method='post' class='form-horizontal'>{% csrf_token %}
+                {% for field in form.visible_fields %}
+                    <fieldset>
+                        <div class="control-group {% if form.errors %}{% if field.errors %}error{% else %}success{% endif %}{% endif %}">
+                          <label class="control-label">{{ field.label }}:</label>
+                          <div class="controls">
+                            {{ field }}      
+                            <span class='help-inline'>{{ field.errors }}</span>
+                          </div>
+                        </div>
+                    </fieldset>
+                {% endfor %}               
+				<div class='bottom-panel btn-group'>
+					<input type='submit' class='btn btn-success btn-large' value='Подтвердить ввод' />
+					<a href='#' class='forget btn btn-warning btn-large'>Забыли код доступа?</a>
+				</div>
+            </form>
+        </div>
+    </div>
+	
+    
+{% endblock %}

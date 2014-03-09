@@ -1,0 +1,6 @@
+@font-face {
+  font-family: "izhitsa";
+  font-weight: normal;
+  font-style: normal;
+  src: url('/media/izhitsa.ttf') format('truetype'), url('/media/izhitsa.woff') format('woff');
+}

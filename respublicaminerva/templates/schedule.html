@@ -1,0 +1,47 @@
+﻿ {% extends "base_with_menu.html" %}
+
+{%block content %}
+    <div class='page_schedule'>
+        <div class='text-overlay'></div>
+        <h1>Расписание</h1>
+
+
+        <div class="link-container">
+            <a class='link large' data-frame='frame_large' href="#">Большой зал</a>
+            <a class='link middle' data-frame='frame_middle' href="#">Средний зал</a>
+            <a class='link small' data-frame='frame_small' href="#">Малый зал</a>
+        </div>
+
+        <div class="frame-container">
+{% comment %}
+            <iframe class="frame" id="frame_large"  src="https://www.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23FFFFFF&src=fabricartis.ru_73hmurh3rfv38hqipiab77k8uk%40group.calendar.google.com&color=%231B887A&ctz=Europe%2FMoscow" style=" border-width:0 " width="700" height="450" frameborder="0" scrolling="no"></iframe>
+            <iframe class="frame" id="frame_small" src="https://www.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23FFFFFF&src=fabricartis.ru_lch41s5gd0arrenpepl6gbrju8%40group.calendar.google.com&color=%235F6B02&ctz=Europe%2FMoscow" style=" border-width:0 " width="700" height="450" frameborder="0" scrolling="no"></iframe>
+            <iframe class="frame" id="frame_middle"  src="https://www.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23FFFFFF&src=fabricartis.ru_kk4vgn82n36mqk98lkra0n35q4%40group.calendar.google.com&color=%23B1365F&ctz=Europe%2FMoscow" style=" border-width:0 " width="700" height="450" frameborder="0" scrolling="no"></iframe>
+{% endcomment %}
+            <iframe class="frame" id="frame_large"  src="https://www.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=6df8il0f8udfr83f27khl2n8v4%40group.calendar.google.com&amp;color=%23125A12&amp;ctz=Europe%2FMoscow" style=" border-width:0 " width="700" height="450" frameborder="0" scrolling="no"></iframe>
+            <iframe class="frame" id="frame_middle" src="https://www.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=q8p3897ftqg6aidj1qm7641lgo%40group.calendar.google.com&amp;color=%23711616&amp;ctz=Europe%2FMoscow" style=" border-width:0 " width="700" height="450" frameborder="0" scrolling="no"></iframe>
+            <iframe class="frame" id="frame_small"  src="https://www.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=mupa791f66uurb3vr6sfns2cos%40group.calendar.google.com&amp;color=%235F6B02&amp;ctz=Europe%2FMoscow" style=" border-width:0 " width="700" height="450" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+{% endblock %}
+
+<script>
+    {% block jsscript %}
+        {{ block.super }}
+
+        $(function(){
+            function show(id){
+                $('.frame').fadeOut();
+                $('#' + id).fadeIn();
+            }
+
+            $(".link").click(function(e){
+                e.preventDefault();
+                var id = $(this).data('frame');
+                show(id);
+            });
+
+            show('frame_large');
+        });
+    {% endblock %}
+</script>

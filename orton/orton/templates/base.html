@@ -1,0 +1,51 @@
+<!DOCTYPE html>{% load cms_tags sekizai_tags menu_tags catalog_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=9">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ортон</title>
+
+    <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/stylesheet.css?{% revision %}" media="all" />
+    <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}css/jquery.fancybox.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}plugins/bootstrap/css/bootstrap.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}plugins/prettyPhoto/css/prettyPhoto.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/bootstrap/css/bootstrap-responsive.css" media="all" />
+{% comment %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/cssrefresh.js"></script>
+{% endcomment %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/prettyPhoto/js/jquery.prettyPhoto.js"></script>
+    <script type="text/javascript" src='{{ MEDIA_URL }}js/jquery.fancybox.pack.js'></script>
+    {% render_block "css" %}
+    {% render_block "js" %}
+
+    <script type="text/javascript">
+    {% block script %} {% endblock %}
+    </script>
+
+	<script type="text/javascript">
+        var _gaq = _gaq || [];
+	    _gaq.push(['_setAccount', 'UA-39825520-1']);
+	    _gaq.push(['_trackPageview']);
+
+	   (function() {
+	      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	   })();									    
+	</script>
+  </head>
+  <body>
+      <div class='background-container'>
+          <div class='background background-middle'></div>
+          <div class='background background-bottom'><img src='{{ MEDIA_URL }}images/main/background-bottom.jpg' /></div>
+          <div class='background background-top'><img src='{{ MEDIA_URL }}images/main/background-top.jpg' /></div>
+      </div>
+      <div class='background-box'></div>
+      {% cms_toolbar %}
+      {% block base_content %}{% endblock %}
+      <div class='foot-spacer'></div>
+  </body>
+</html>

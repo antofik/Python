@@ -1,0 +1,15 @@
+<!-- UWSGI XML Configuration File -->
+<uwsgi>
+    <socket>/server/www/respublicaminerva.ru/uwsgi.sock</socket>
+    <plugins>python</plugins>
+    <pythonpath>/server/www/respublicaminerva.ru</pythonpath>
+    <module>wsgi</module>
+    <processes>5</processes>
+    <max-requests>5000</max-requests>
+    <buffer-size>32768</buffer-size>
+    <harakiri>30</harakiri>
+    <reload-mercy>8</reload-mercy>
+    <master />
+    <no-orphans />
+
+</uwsgi>

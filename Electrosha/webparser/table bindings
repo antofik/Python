@@ -1,0 +1,63 @@
+product
+	quantity = 10
+	image = имя файла картинки, начиная с /image
+	price = цена в долларах
+	date_added=NOW()
+	date_modified=NOW()
+
+product_to_category
+	product_id = $product_id
+	category_id=$category_id
+	main_category=0
+
+product_to_store
+	product_id = $product_id
+	store_id=0
+
+product_image - для неосновных картинок
+	product_id = $product_id
+	image = $image ( имя файла картинки, начиная с /image)
+
+product_description
+	product_id = $product_id
+	language_id=1
+	name=$product_name_ru
+	description=$product_description_ru
+	meta_description=$product_description_ru
+	meta_keywords=$product_description_ru
+
+
+product_description
+	product_id = $product_id
+	language_id=2
+	name=$product_name_en
+	description=$product_description_en
+	meta_description=$product_description_en
+	meta_keywords=$product_description_en
+
+attribute
+	attribute_group_id=1
+
+attribute_description
+	attribute_id=$attribute_id
+	language_id=1
+	name=название аттрибута на русском
+
+attribute_description
+	attribute_id=$attribute_id
+	language_id=2
+	name=название аттрибута на англ
+
+
+product_attribute
+	product_id = $product_id
+	language_id=1
+	attribute_id=$attribute_id
+	text=значение аттрибута на русском
+
+product_attribute
+	product_id = $product_id
+	language_id=2
+	attribute_id=$attribute_id
+	text=значение аттрибута на английском
+

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block fixed-buttons %}
+    <div class="btn-group" style="margin-left: 8px; float: right">
+        <button id="cmdNew" class='btn btn-success dropdown-toggle' data-toggle="dropdown" style="width: 120px;" >
+            New
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu">
+            {% for item in popular_languages %}
+                <li><a tabindex="-1" href="/create/{{ item.id }}">{{ item.name }}</a></li>
+            {% endfor %}
+            {% if popular_languages %}<li class="divider"></li>{% endif %}
+            <li><a tabindex="-1" href="/create">More...</a></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block base-content %}
+<div class='page-home container'>
+    <div class='block-search well'>
+        <input id="txtSearch" type="text" data-provide="typeahead" autocomplete="off" autofocus placeholder="Search by algorithm name" style="width: 80%; display: block; margin: auto;">
+    </div>
+
+{% comment %}    <h4 class='well well-small' style='color: gray'>List of alogrithms</h4>
+    {% for item in algorithms %}
+        <div style='margin:4px;'>
+            <a style='padding: 4px; display: inline-block; min-width: 150px;' href='/fork/{{ item.id }}'>{{ item.name|default:"unnamed" }}</a>
+            {% for tag in item.tags.all %}
+                {% if tag.name %}
+                <span class='label'>{{ tag.name|default:"empty" }}</span>
+                {% endif %}
+            {% endfor %}
+            {% for implementation in item.implementations.all %}
+                <a href='/fork/{{ item.id }}/{{ implementation.language.slug }}'><span class='label label-info'>{{ implementation.language.name }}</span></a>
+            {% endfor %}
+        </div>
+        <div style='background: #ccc; height:1px; width: 100%;'></div>
+    {% endfor %}
+<br/>
+<br/>
+<br/>{% endcomment %}
+    {% for main_tag in tags %}
+        <div><h3>{{ main_tag.name }}</h3></div>
+        {% for item in main_tag.items %}
+            <div style='margin:4px;'>
+                <a style='padding: 4px; display: inline-block; min-width: 150px;' href='/algo/{{ item.id }}'>{{ item.name|default:"unnamed" }}</a>
+                {% for tag in item.tags.all %}
+                    {% if tag.name %}
+                    <span class='label'>{{ tag.name|default:"empty" }}</span>
+                    {% endif %}
+                {% endfor %}
+                {% for implementation in item.implementations.all %}
+                    <a href='/algo/{{ item.id }}/{{ implementation.language.slug }}'><span class='label label-info'>{{ implementation.language.name }}</span></a>
+                {% endfor %}
+            </div>
+            <div style='background: #ccc; height:1px; width: 100%;'></div>
+        {% endfor %}
+    {% endfor %}
+
+    <script>
+        $(function(){
+            var hash = {
+                {% for algorithm in algorithms %}
+                    '{{ algorithm.name }}':{{ algorithm.id }} {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            };
+
+            $('#txtSearch').typeahead({
+                source: [
+                    {% for algorithm in algorithms %}
+                        '{{ algorithm.name }}'{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                updater: function(item){
+                    var id = hash[item];
+                    document.location = '/algo/' + id;
+                }
+           });
+        });
+    </script>
+</div>
+{% endblock %}

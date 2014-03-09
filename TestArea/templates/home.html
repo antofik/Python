@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% comment %}****************************************************{% endcomment %}
+{% comment %}************* SCRIPTS ******************************{% endcomment %}
+{% comment %}****************************************************{% endcomment %}
+{% block scripts %}
+    <!--<script type="text/javascript" src="{{ MEDIA_URL }}js/home.js"></script>-->
+    <!--<link rel="stylesheet" type='text/css' href='{{ MEDIA_URL }}plugins/forkit/css/demo.css' />-->
+    <link rel="stylesheet" type='text/css' href='{{ MEDIA_URL }}plugins/forkit/css/forkit.css' />
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/snowfall.jquery.js"></script>
+    <!-- <script type="text/javascript" src="{{ MEDIA_URL }}js/cssrefresh.js"></script> -->
+    <script type='text/coffeescript' src='{{ MEDIA_URL }}coffee/home.coffee'></script>
+    <script type='text/coffeescript' src='{{ MEDIA_URL }}coffee/scenes/black-and-white.coffee'></script>
+    <script type='text/coffeescript' src='{{ MEDIA_URL }}coffee/scenes/winter.coffee'></script> 
+    <script type='text/coffeescript' src='{{ MEDIA_URL }}coffee/scenes/shatter_image.coffee'></script>
+    <script type='text/coffeescript' src='{{ MEDIA_URL }}coffee/we-are-the-best.coffee'></script>
+    <script type='text/coffeescript'>
+      @.BlackAndWhite.enter()
+    </script>
+{% endblock %}
+
+{% comment %}****************************************************{% endcomment %}
+{% comment %}************* BASE CONTENT *************************{% endcomment %}
+{% comment %}****************************************************{% endcomment %}
+{% block base-content %}
+    <div class='center-point'>
+        <div class='canvas'>
+            <div class='layer layer-speed-1'>
+                <div class='global-background'></div>
+
+                <div class='scene scene-black-and-white'>
+                    <canvas width='4000' height='3000' class='bw-canvas canvas-sketch'></canvas>
+                    <div class="background background-moving"></div>
+                    <canvas width='4000' height='3000' class='bw-canvas canvas-release'></canvas>
+                    <div class='clouds we-are-the-best'>
+                        <div class='holder'>
+                            <div class='bird-stick'></div>
+                            <img class='bird left-bird' src='{{ MEDIA_URL }}images/black-and-white/we-are-the-best/bird.gif' />
+                            <img class='bird right-bird' src='{{ MEDIA_URL }}images/black-and-white/we-are-the-best/bird.gif' />
+                            <div class='inner'></div>
+                            <div class='title'>Мы делаем сказку</div>
+                            <div class='hidden divisions'>Путеуказатель</div>
+                            <div class='rules'>
+                                <div class='rule rule1'>
+                                    Сайт смастерить
+                                    <div class='assigned'>Ответственные: три богатыря</div>
+                                    <a href='#site' class='goto gotoSite'>Посетить</a>
+                                </div>
+                                <div class='rule rule2'>
+                                    Магазин соорудить
+                                    <div class='assigned'>Ответственные: Яга, пра-пра-бабушка</div>
+                                    <a href='#shop' class='goto gotoShop'>Посетить</a>
+                                </div>
+                                <div class='rule rule3'>
+                                    Невозможное сделать
+                                    <div class='assigned'>Ответственные: Двое из ларца</div>
+                                    <a href='#impossible' class='goto gotoImpossible'>Посетить</a>
+                                </div>
+                            </div>
+							<div class='why-we-better'>
+								<div class='title'>Почему у нас лучше, чем в три-десятом-царстве?</div>
+								<ul class='list'>
+									<li class='item'>Мы знаем, когда надо ломать, а когда - строить</li>
+									<li class='item'>Мы умеем строить на века</li>
+									<li class='item'>У нас в бригаде 33 богатыря, учёный кот и русалка-дизайнер</li>
+									<li class='item'>Нужны ещё аргументы? Тогда смотрите и судите сами</li>
+									<a href='#portfolio' class='goto gotoPortfolio'>Смотреть работы</a>
+								</ul>
+							</div>
+                        </div>
+                    </div>
+                    <div class='clouds-old'></div>
+                    <div class="as-program">
+                        <span class='burning-text'>A</span>
+                        <span class='burning-text'>S </span>
+                        <span class='burning-text'>P</span>
+                        <span class='burning-text'>r</span>
+                        <span class='burning-text'>o</span>
+                        <span class='burning-text'>g</span>
+                        <span class='burning-text'>r</span>
+                        <span class='burning-text'>a</span>
+                        <span class='burning-text'>m</span>
+                    </div>
+
+                </div>
+
+                <div class='scene scene-autemn'>
+                    <div class="background background-moving"></div>
+                    <div class='clouds'></div>
+                    <div class="background branches"></div>
+                    <div class="as-program">
+                        <span class='burning-text'>A</span>
+                        <span class='burning-text'>S </span>
+                        <span class='burning-text'>P</span>
+                        <span class='burning-text'>r</span>
+                        <span class='burning-text'>o</span>
+                        <span class='burning-text'>g</span>
+                        <span class='burning-text'>r</span>
+                        <span class='burning-text'>a</span>
+                        <span class='burning-text'>m</span>
+                    </div>
+                </div>
+
+                <div class='scene scene-winter'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-autemn-road'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-autemn-lake'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-green-leaves'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-red-leaves'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-water-green-leaves'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-white-pink-leaves'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-white-red-leaves'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-winter-tree'>
+                    <div class="background"></div>
+                </div>
+
+                <div class='scene scene-yellow-leaves'>
+                    <div class="background"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+    <div class='buttons hidden'>
+        <button class="btn btn-primary btn-right"><i class='icon-chevron-right'></i></button>
+        <button class="btn btn-success btn-up"><i class='icon-chevron-up'></i></button>
+        <button class="btn btn-warning btn-left"><i class='icon-chevron-left'></i></button>
+        <button class="btn btn-danger btn-down"><i class='icon-chevron-down'></i></button>
+    </div>
+    <div class='temp-container'></div>
+
+    <div class='forkit-container'>
+		<!-- The contents (if there's no contents the ribbon acts as a link) -->
+		<div class="forkit-curtain">
+			<!--<h2 class='title'>Тайная информация</h2>-->
+            <iframe src="http://asprogram.ru" class='frame' width='1400' height="600">
+            </iframe>
+			<div class="close-button"></div>
+		</div>
+	</div>
+
+    <!-- The ribbon -->
+    <a class="forkit" data-text="Тайная информация" data-text-detached="Потянуть вниз >" href="https://github.com/hakimel/forkit.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/camo.github.com/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/forkit/js/forkit.js"></script>
+
+{% endblock %}

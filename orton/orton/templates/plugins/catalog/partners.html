@@ -1,0 +1,20 @@
+{% load smart_load catalog_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+<div class='partners'>
+        <div class='header'>Партнёры ООО "Ортон"</div>
+        {% for partner in partners %}
+            <div class='partner'>
+                <a class='image-link' href="{{ partner.url }}">
+                    {% thumbnail partner.image.file.name "120" format="PNG" as im %}
+                        <img class='image' src="{{ im.url }}" alt="" style='height:{{ im.height }}px;width: {{ im.width }}px;' />
+                    {% endthumbnail %}
+                </a>
+                <div class='text'>
+                    <div class='name'><a href="{{ partner.url }}">{{ partner.name }}</a></div>
+                    <div class='description'>{{ partner.description }}</div>
+                </div>
+                <div style='clear:both'></div>
+            </div>
+        {% endfor %}
+</div>

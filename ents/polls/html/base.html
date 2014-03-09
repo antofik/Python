@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %} preved medved {% endblock %}</title>
+    <link href="/media/css/site.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+<body>
+    <div class="header" style="width: 600px; margin: auto">
+        {% block header %}
+            <h1>Система тестов</h1>
+        {% endblock %}
+    </div>
+    <div style="width: 600px; margin: auto">
+        {% block content %}
+            default page
+        {% endblock %}
+    </div>
+</body>
+</html>

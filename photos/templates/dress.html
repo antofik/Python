@@ -1,0 +1,320 @@
+{% extends "base_decorated.html" %}
+
+{% block head %}
+   {{ block.super }}
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery-color/jquery.color.js"></script>
+   <!--<script type="text/javascript" src="{{ MEDIA_URL }}plugins/jRating/jRating.jquery.custom.js"></script>-->
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/center.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/top.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/themes/default.js"></script>
+   <!--<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/jRating/jRating.jquery.css" media="screen" />-->
+{% endblock %}
+
+{% block jsscript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+    {% if dress.show_hint %}
+    $(function(){
+        try{
+            jQuery = $;
+            noty({
+                text: $('.hint-template').html(),
+                layout:'top',
+                type:'warning', 
+                buttons: [
+                    {addClass: 'btn btn-warning', text: 'Закрыть', onClick: function($noty) {
+                        $noty.close();
+                      }
+                    }
+                ],				
+                modal: true});
+        }catch(e){ //e.g. IE8
+        }
+    });
+    {% endif %}
+
+    function showBusyIndicator(callback, data){
+        noty({
+            text: 'Подождите, идёт обработка запроса...',
+            layout:'center',
+            type:'information',
+            callback: {afterShow: function(){callback(data);}},
+            closeWith: [],
+            modal: true});
+    }
+
+    function error_message(text){
+        try{
+            jQuery = $;
+            noty({
+                text: text,
+                layout:'center',
+                type:'error',
+                timeout: 3000,
+                modal: true});
+        }catch(e){
+            alert(text);
+        }
+    }
+
+    function success_message(text){
+        try{
+            noty({
+                text: text,
+                layout:'top',
+                type:'success',
+                timeout: 3000,
+                modal: true});
+        }catch(e){
+            console.log(e);
+            alert(text);
+        }
+    }
+
+    function format_buyer(buyer){
+        var template = $('.buyer-template').html();
+        template = template.split('{fio}').join(buyer.fio);
+        template = template.split('{phone}').join(buyer.phone);
+        template = template.split('{email}').join(buyer.email);
+        template = template.split('{date}').join(buyer.date);
+        return template;
+    }
+
+    function show_buyers(access_key){
+        $.ajax({type:'POST', url:'/get_buyers/{{ dress.id }}', dataType:'JSON',
+            data:{'access_key':access_key},
+            success: function(data, textStatus, jqXHR){
+                $.noty.closeAll();
+                if (data.ok){
+                    var value = "<div><h4>Список желающих примерять ваше платье</h4>";
+                    for (i in data.buyers){
+                        var buyer = data.buyers[i];
+                        value += format_buyer(buyer);
+                    }
+                    value += "</div>";
+                    noty({
+                        text: value,
+                        layout:'center',
+                        type:'success',
+                        buttons: [
+                            {addClass: 'btn btn-primary', text: 'Закрыть', onClick: function() {
+                                $.noty.closeAll();
+                                }
+                            }
+                        ],
+                        modal: true});
+                } else{
+                    error_message('Вы указали неверный код доступа');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $.noty.closeAll();
+                error_message('Информация засекречена. Свяжитесь с нами по адресу contact@mfst.pro и опишите ситуацию');
+            }
+        });
+
+    }
+
+    function show_who_buy(){
+        jQuery = $;
+        noty({
+            text:"<div>Код доступа к платью</div><br/><div class='input-prepend'><span class='add-on'><i class='icon-key'></i></span><input type='text' class='access-key' /></div>",
+            layout:'center',
+            type:'information',
+            modal: true,
+            buttons: [
+                {addClass: 'btn btn-primary', text: 'Подтвердить', onClick: function($noty) {
+                    $.noty.closeAll();
+                    showBusyIndicator(show_buyers, $('.access-key').val());
+                }
+                },
+                {addClass: 'btn btn-danger', text: 'Отмена', onClick: function($noty) {
+                    $.noty.closeAll();
+                }
+                }
+            ]
+        });
+    }
+
+    function validate_reply(){
+        var fio = $('.noty_text .reply-fio').val();
+        var phone = $('.noty_text .reply-phone').val();
+        var email = $('.noty_text .reply-email').val();
+
+        if (fio.length<4){
+            error_message('Необходимо указать ваше имя');
+            return false;
+        }
+
+        if (phone.length<4){
+            error_message('Необходимо указать ваш номер телефона');
+            return false;
+        }
+
+        if (email.length<4){
+            error_message('Необходимо указать ваш email');
+            return false;
+        }
+
+        return true;
+    }
+
+    function sendNotification(fio, phone, email){
+        $.ajax({type:'POST', url:'/send_notification/', dataType:'JSON',
+            data:{id: '{{ dress.id }}', fio:fio, phone:phone, email:email },
+            success: function(data, textStatus, jqXHR){
+                        $.noty.closeAll();
+                        if (data.ok){
+                            noty({text: 'Сообщение было отправлено. Желаем удачи!', layout:'top', type: 'success', 'timeout': 3000});
+                        }else{
+                            alert('Не удаётся отправить письмо. Попробуйте связаться с хозяйкой самостоятельно. Телефон можно увидеть нажав кнопку "Хочу примерить"');    }
+                    },
+            error: function(jqXHR, textStatus, errorThrown){
+                            $.noty.closeAll();
+                            alert('Не удаётся отправить письмо. Попробуйте связаться с хозяйкой самостоятельно. Телефон можно увидеть нажав кнопку "Хочу примерить"');
+                    }
+            });
+    }
+
+    $(function(){
+        $('.who_buy').click(show_who_buy);
+        $('.btn-tryit').click(function(){
+            try{
+                jQuery = $;
+                noty({
+                    text: $('.price-info-template').html(),
+                    layout:'top', 
+                    type:'information', 
+                    buttons: [
+                        {addClass: 'btn btn-primary', text: 'Отправить хозяйке сообщение', onClick: function($noty) {
+                            if (!validate_reply()) return;
+                            var fio = $('.noty_text .reply-fio').val();
+                            var phone = $('.noty_text .reply-phone').val();
+                            var email = $('.noty_text .reply-email').val();
+
+                            $.noty.closeAll();
+
+                            jQuery = $;
+
+                            noty({
+                                text: 'Подождите, идёт отправка сообщения...',
+                                layout:'center',
+                                type:'information',
+                                buttons: [],
+                                callback: {afterShow: function(){sendNotification(fio, phone, email);}},
+                            modal: true});
+                          }
+                        },
+                        {addClass: 'btn btn-danger', text: 'Отмена', onClick: function($noty) {
+                            $.noty.closeAll();
+                            }
+                        }
+                    ],				
+                    modal: true});
+            }catch(e){ //e.g. IE8
+                $('.price-info-template').removeClass('hidden');
+                $('.default-send-button').removeClass('hidden');
+            }
+        });
+        $('.default-send-button').click(function(){
+            $.post('/send_notification/', {id: '{{ dress.id }}', message: $('.message').val() });
+            alert('Сообщение было отправлено. Желаем удачи!');
+            $('.price-info-template').addClass('hidden');
+            $('.default-send-button').addClass('hidden');
+        });
+		
+		$('.photo-preview').popover({
+			delay: 0
+		});
+    });
+
+{%  comment %}
+	$(document).ready(function(){		
+		$(".rating").jRating({
+			step:true,
+			length : 5,
+			rateMax : 5,
+			{% if rating > 0 %}isDisabled: true,{% endif %}            
+			bigStarsPath : '{{ MEDIA_URL }}plugins/jRating/icons/stars.png',
+			smallStarsPath : '{{ MEDIA_URL }}plugins/jRating/icons/small.png',
+			phpPath : '/rate-dress',
+			onSuccess : function(){				
+			},
+			onError : function(){				
+			}
+		});
+	});
+ {% endcomment %}
+
+    </script>
+	
+{% endblock %}
+
+{% block toolbar-top %}
+	{% load ratings %}
+	{% rating_by_request request on dress.rating as vote %}
+	<a href='new' class='btn-create btn btn-primary btn-large'>Разместить фотографии</a>
+
+{% endblock %}
+
+{% block toolbar-bottom %}
+	<a href='/' class='btn btn-action btn-large'>Вернутся к списку</a>	
+{% endblock %}
+
+{% block content %}
+
+{% load thumbnail %}
+<div class="container dress-container">
+    <div class="row data">
+        <div class="span12">            
+            <div class='row info'>
+                <div class='span12'>
+                    <span class='caption'> </span>
+                    <span class='value'>{{ dress.name }}</span>
+                </div>
+            </div>
+            <div class='description'>
+                {{ dress.description }}
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='span12 photo_panel'>
+            <div class='holder'>
+                <ul class="thumbnails">
+                  <li class="span4 photo-preview" {% if dress.main_photo_description %} title='Описание' data-content='{{ dress.main_photo_description|default:"Отсутствует" }}' {% endif %}>
+                    <div class="thumbnail">
+                        <div class="img4" >
+                            {% thumbnail dress.main_photo "320" as im %}
+								<a rel='photo[gallery]' href='{{ dress.main_photo.url }}' data-title='<a href="{{ photo.image.url }}">Скачать</a><br/>{{ dress.main_photo_description }}' >
+									<div style="background-image:url({{ im.url }})" alt='{{ dress.main_photo_description }}'></div>
+								</a>
+                            {% endthumbnail %}                            
+                        </div>
+                    </div>
+                  </li>
+                  {% for photo in photos %}
+                    {% if not photo.is_main %}
+                      <li class="span2 photo-preview" {% if photo.description %} title='Описание' data-content='{{ photo.description }}' {% endif %}>
+                        <div class="thumbnail">
+                            <div class="img2" >
+                                {% thumbnail photo.image "160" as im %}
+                                    <a rel='photo[gallery]' href='{{ photo.image.url }}' title='{{ photo.description }}' data-title='<a href="{{ photo.image.url }}">Скачать</a><br/>{{ photo.description }}'>
+                                        <div style="background-image:url({{ im.url }})" alt='{{ photo.description }}'></div>
+                                    </a>
+                                {% endthumbnail %}                            
+                            </div>
+                        </div>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

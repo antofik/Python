@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{%block content %}
+<h1>Repository list</h1>
+
+<ul>
+{% for repository in repositories %}
+	<li>		
+		<a href='/repository/{{repository.name}}'>{{ repository.name }}</a> 
+		- 
+		<a href='/userset/{{repository.userset}}'>{{ repository.userset|default:"Default"}}</a>			
+	</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

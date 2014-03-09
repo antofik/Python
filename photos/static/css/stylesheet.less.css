@@ -1,0 +1,760 @@
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= COMMON CLASSES ==============================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.relative{
+	position: relative;	
+	width: 100%;
+}
+
+.center{
+	position: absolute;	
+	left:50%;
+}
+
+.left{
+	position: absolute;
+	left: -500px;	
+	width: 1000px;
+}
+
+.hidden{
+    display: none;
+}
+
+.fullheight{
+    height: 100%;
+}
+
+.box-shadow (@x: 0, @y: 0, @blur: 1px, @color: #000) {
+  box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  -webkit-box-shadow: @arguments;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= BASE TEMPLATE ===============================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+ 
+@img-width4: 360px;
+@img-height4: 268px;
+
+@img-width2: 160px;
+@img-height2: 120px;
+
+.myimg(@width, @height){ 
+    overflow: hidden;
+    div{min-width: @width;min-height: @height;}    
+}
+.img4{.myimg(@img-width4, @img-height4);div{background-size:cover;}}
+.img2{.myimg(@img-width2, @img-height2);div{background-size:cover;}}
+
+.size(@width, @height){width: @width;height: @height;}
+.size4{height: @img-height4; width: @img-width4;}
+
+html, body{
+    min-height: 100%;
+    height: 100%;
+    margin: 0px;
+    background-color: #979797;
+	background: url(../images/background.jpg) repeat;
+	//background: url(../images/background.png) repeat;
+}
+
+.navbar{
+    .logo-mfstpro{
+        height: 30px;
+        float: right;
+        margin-right: 16px;
+    }
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= DECORATED TEMPLATE ==========================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.page_background{
+    min-height: 100%;
+    position: relative;
+    top: 18px;
+}
+
+.decorator{
+    height: 100%;
+    margin: 0px;
+    margin-top: -24px;
+    background: url(../images/page_dress_background.jpg) repeat;    
+	.box-shadow(0px, 0px, 20px, #000);
+    .background{
+        height: 50px;
+    }    
+	.toolbar{        
+		background: url(../images/bar_test.jpeg) repeat;
+		position: relative;
+		min-height: 54px;
+		.btn{margin: 8px;}
+	}
+    .right-container{
+        float: right;
+        position: relative;
+    }
+    #vk_like{
+        display: block;
+		float:right;
+		margin-top: 14px;
+		margin-right: 160px;
+    }
+    #vk_share{
+        right: 0px;
+        display: block;
+        position: absolute;
+		top: 0px;
+		float: right;
+        margin: 16px 10px 0px auto;
+    }
+	.feedback{
+		text-align: right;
+		float:right;
+		padding-top: 8px;
+		padding-right: 16px;
+	}	
+}
+
+#vk_comments{
+	margin: 0px auto;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= HOME PAGE ===================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+@caption: darken(rgb(204,152,102), 20%);
+
+.main-page-header{
+    position: relative;
+    .well {min-height: 100px; color: @caption; margin: 0px;border: none;}
+    h1{
+        color: @caption;
+    }
+    p{
+        color: #888;
+        margin-top: auto;
+    }
+    .motto{
+        font-size: 1.4em;
+        font-family: Comic Sans MS;
+        text-align: right;
+    }
+    .logo{
+        float: right;
+        margin-top: -10px;
+        margin-right: 20px;
+    }
+}
+
+.filter-panel{
+    position: relative;    
+    min-height: 60px;
+    .filter-container{
+        position: relative;
+        margin: 8px;
+        margin-left: 16px;
+        z-index: 1;
+        select{ width: auto; margin-left: 4px; margin-bottom: 0px;}
+        .caption{color: fade(black, 40%); font-weight: bold;}
+    }
+    .background{
+        position: absolute;
+        height: 100%;
+        box-sizing: border-sizing;
+        .holder{
+            left: 0px;
+            right: 0px;
+            height: 100%;
+            position: absolute;
+            background: rgb(245,245,245);
+            border: none;
+        }
+    }
+}
+
+.dress-preview{
+    display: inline-block;
+    width: 360px;    
+    height: 300px;
+    margin: 8px;
+    padding: 0px;        
+    background: fade(black, 10%);
+    box-sizing: border-box;
+    position: relative;
+    margin-left: 8px;
+    margin-right: 8px;
+    .photo, .photo div{
+        width: 360px;
+        height: 260px;
+        background-size: cover;
+        overflow: hidden;       
+        div{position: relative;}
+    }
+    .toolbar{
+        vertical-align: bottom;
+        margin-bottom: auto;
+        position: absolute;
+        width: 100%;
+        bottom: 0px;
+        .info{
+            display: inline;
+            position: absolute;
+            width: 260px;
+            margin: 4px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            .caption{color: @caption; text-overflow: ellipsis;}
+            .value{
+                display: inline-block;
+                vertical-align: bottom;
+                max-width: 200px;
+                color: white; 
+                margin-left: 4px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+	.panel-details{
+		display: block;
+		position: absolute;
+		width: 100%;				
+		top: 0px;
+		right: 0px;
+		color: white;
+		padding: 8px;
+		box-sizing: border-box;
+		background: fade(black, 40%);
+		.to-left{text-align: left;float:left;position: absolute;top:8px;}
+		.to-right{text-align:right;}
+        
+	}
+    
+    .busy-indicator{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        img{
+            position: relative;
+            left: -50%;
+            top: -80px;
+        }
+    }
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= LOGIN PAGE ==================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.login-form{
+    margin: 8px;
+	position: relative;
+    .well{text-align: center;}
+    .form-horizontal{
+        color: @caption;
+        max-width: 400px;
+        display: block;
+        margin: auto;
+        .btn{
+            margin: auto;
+        }
+    }
+	.bottom-panel{
+		.btn{width:49.5%;}
+	}
+	.forget2{
+		position: absolute;
+		right: 0px;
+		bottom: 0px;
+		float:right;
+	}	
+	.error{ 
+		text-align: center;
+		color: red;
+		margin: 8px;
+		font-size: 1.2em;
+		font-weight: bold;
+		margin-bottom: 16px;
+	}
+
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= DRESS PAGE ==================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+@page-background: white;//fade(darken(blue, 35%), 60%);
+@panel_color: fade(black, 10%);
+
+.dress-container{
+    min-height: 100%;
+    height: 100%;
+    margin: 0px;
+    margin-top: -24px;
+    background: url(../images/page_dress_background.jpg) repeat;    
+	.box-shadow(0px, 0px, 20px, #000);
+    .background{
+        height: 50px;
+    }
+    .data{
+        margin-top: 16px;
+    }
+    .info{
+        font-size: 1.4em;
+        div{
+            margin-top: 0.6em;
+            min-height: 1.0em;
+            vertical-align: middle;
+        }
+		box-sizing: border-box;
+		padding: 0px 0px 0px 0px;
+        .caption{
+			margin-left: 12px;
+            color: darken(rgb(204,152,102), 20%);
+        }
+        .value{			
+            color: darken(rgb(204,152,102), 40%);
+        }
+    }
+	.description{
+        margin-top: 10px;
+		padding: 24px 16px;
+        background: url(../images/description2.jpg) repeat;
+        border: 1px solid fade(gray,10%);
+        font-size: 1.2em;
+        line-height: 1.6em;
+        text-wrap: break-word;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        color: darken(rgb(204,152,102), 40%);
+	}
+    
+	.photo_panel .holder{
+        padding-top: 16px;
+		.span4, .span2{
+		}
+        .thumbnail{
+            border-color: @panel_color; 
+            background-color: fade(black, 10%); 
+        }
+	}
+    .price{
+        position: absolute;
+        margin: 20px auto 0px 10px;        
+        .label{
+            color: white;         
+            padding: 8px;
+            font-size: 16px;        
+        }
+    }
+    .galleria-stage{
+        background-color: fade(black, 5%);
+    }
+}
+
+.price-info{
+	font-size: 1.2em;
+	line-height: 1.2em;
+	
+	.info{
+		margin: 8px;
+		text-align: left;
+	}
+	.caption{
+		color: darken(rgb(204,152,102), 20%);
+	}
+	.value{
+		color: white;
+	}
+	.description{
+		color: #333;
+	}
+	.message{
+		min-height: 100px;
+		margin: 0px;
+		width: 100%;
+		box-sizing: border-box;
+	}
+}
+
+.buyer-info{
+    .info{
+    }
+}
+
+.price-info-holder{
+    .delimeter{
+        border-top: 1px solid gray;
+        border-bottom: 1px solid white;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    .reply-form{
+        text-align: left;
+        .caption{vertical-align: middle;}
+        input{margin: auto;}
+    }
+}
+
+.price-info-template, {
+    background: fade(black, 20%);
+
+    padding: 8px;
+    line-height: 1.8em;
+    .price-info{
+        margin-top: 30px;
+    }
+    .delimeter{
+        border-top: 1px solid gray;
+        border-bottom: 1px solid white;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    .reply-form{
+        text-align: left;
+        .caption{vertical-align: middle;}
+        input{margin: auto;}
+    }
+}
+
+
+.rating-container{
+	.box-shadow(0px, 0px, 20px, yellow);
+	position: absolute;
+	top: 16px;
+	right: 220px;
+}
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*==================================== EDIT DRESS PAGE ==================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.dress-new{
+    .data{    
+        .well{
+            font-size: 1.2em;
+            color: brown;
+            text-align: center;
+        }
+        input[type=submit]{margin-left: 160px; display: inline-block;}
+        .info{
+        }
+        .value{
+            width: 160px;
+        }
+        .errors{
+            ul{float:left; color: red;}
+        }
+    }
+    .info{
+        font-size: 1.4em;
+        line-height: 1.8em;
+		padding: 0px 16px;
+        min-width: 280px;
+        display: inline-block;
+        text-align: right;
+        .caption{
+            color: darken(rgb(204,152,102), 20%);
+        }
+    }
+    .value{
+        margin-right: 40px;
+        color: darken(rgb(204,152,102), 40%);    
+    }
+	.required{color: red; }
+    .imagefield, .oldimagefield{
+        .image{
+            .box-shadow(0px, 0px, 4px, #bbb);
+            width: 100px;
+			overflow: hidden;
+			max-height: 200px;
+            size: cover;			
+        }
+        .remove{
+            background: white;
+            opacity: 0.5;
+            filter: alpha(opacity=50);
+            float: none;
+            vertical-align: top;
+        }
+        .description{
+            min-height: 90px;
+			width: 257px;
+        }
+		legend{display: none;}
+		.controls{
+			box-sizing: border-box;
+		}
+    }
+	legend{margin: 0px;}
+	div.control-group{ margin: 2px;	}
+	.errorlist li{
+		color: red;
+		list-style-type: none;
+	}
+    
+    #progress{
+        .control-label{vertical-align: center;font-weight: bold;}
+        .progress{vertical-align: center;margin-top: 4px;}
+    }
+}
+
+.main-photos{
+    .img4{
+        .description{
+            margin-top: -90px;
+            min-height: 70px;
+            max-height: 40px;
+            padding: 8px;
+            font-size: 1.2em;
+            min-width: inherit;
+            background: fade(white, 80%);
+            text-overflow: ellipsis;
+            overflow: hidden;            
+        }        
+    }
+}
+
+.dress-new{
+	margin: auto;
+	padding: 8px;
+	display: block;
+	max-width: 800px;
+}
+
+.uploadpanel{
+    margin: 16px 0px;
+}
+
+.fileinput-button{
+    position: relative;
+    overflow: hidden;
+}
+
+
+#fileupload{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 0px;
+    border-color: transparent;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 100px;
+    border-left-width: 200px;
+    border-style: solid;
+    filter: alpha(opacity=0);
+    cursor: pointer;
+    direction: ltr;
+    opacity: 0;
+    background: green;
+    
+}
+
+#alert-progress{
+	margin-top: 4px;
+	margin-bottom: 0px;
+}
+
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*==================================== EMAILERS PAGE ====================================*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+
+.emailer-page{
+    .subject{
+        width: 100%;
+    }
+    .message{
+        width: 100%;
+        min-height: 200px;
+    }
+    .emails{
+        width: 100%;
+        min-height: 300px;
+    }
+    .results-ok{
+        color: green;
+    }
+    .results-failed{
+        color: red;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*=======================================================================================*/
+/*=======================================================================================*/
+/*========================================= MIXINGS from http://lesselements.com/ =======*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+/*```````````````````````````````````````````````````````````````````````````````````````*/
+ 
+
+.gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
+
+  background: @color;
+  background: -webkit-gradient(linear,
+                               left bottom,
+                               left top,
+                               color-stop(0, @start),
+                               color-stop(1, @stop));
+  background: -ms-linear-gradient(bottom,
+                                  @start,
+                                  @stop);
+  background: -moz-linear-gradient(center bottom,
+                                   @start 0%,
+                                   @stop 100%);
+  background: -o-linear-gradient(@start, @stop);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=@start, endColorstr=@stop);
+}
+.bw-gradient(@color: #F5F5F5, @start: 0, @stop: 255) {
+  background: @color;
+  background: -webkit-gradient(linear,
+                               left bottom,
+                               left top,
+                               color-stop(0, rgb(@start,@start,@start)),
+                               color-stop(1, rgb(@stop,@stop,@stop)));
+  background: -ms-linear-gradient(bottom,
+                                  rgb(@start,@start,@start) 0%,
+                                  rgb(@start,@start,@start) 100%);
+  background: -moz-linear-gradient(center bottom,
+                                   rgb(@start,@start,@start) 0%,
+                                   rgb(@stop,@stop,@stop) 100%);
+}
+.bordered(@top-color: #EEE, @right-color: #EEE, @bottom-color: #EEE, @left-color: #EEE) {
+  border-top: solid 1px @top-color;
+  border-left: solid 1px @left-color;
+  border-right: solid 1px @right-color;
+  border-bottom: solid 1px @bottom-color;
+}
+.drop-shadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
+  -webkit-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+  -moz-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+  box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+}
+.rounded(@radius: 2px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+  -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; 
+}
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+  -webkit-border-top-right-radius: @topright;
+  -webkit-border-bottom-right-radius: @bottomright;
+  -webkit-border-bottom-left-radius: @bottomleft;
+  -webkit-border-top-left-radius: @topleft;
+  -moz-border-radius-topright: @topright;
+  -moz-border-radius-bottomright: @bottomright;
+  -moz-border-radius-bottomleft: @bottomleft;
+  -moz-border-radius-topleft: @topleft;
+  border-top-right-radius: @topright;
+  border-bottom-right-radius: @bottomright;
+  border-bottom-left-radius: @bottomleft;
+  border-top-left-radius: @topleft;
+  -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; 
+}
+.opacity(@opacity: 0.5) {
+  -moz-opacity: @opacity;
+  -khtml-opacity: @opacity;
+  -webkit-opacity: @opacity;
+  opacity: @opacity;
+}
+.transition-duration(@duration: 0.2s) {
+  -moz-transition-duration: @duration;
+  -webkit-transition-duration: @duration;
+  transition-duration: @duration;
+}
+.rotation(@deg:5deg){
+  -webkit-transform: rotate(@deg);
+  -moz-transform: rotate(@deg);
+  transform: rotate(@deg);
+}
+.scale(@ratio:1.5){
+  -webkit-transform:scale(@ratio);
+  -moz-transform:scale(@ratio);
+  transform:scale(@ratio);
+}
+.transition(@duration:0.2s, @ease:ease-out) {
+  -webkit-transition: all @duration @ease;
+  -moz-transition: all @duration @ease;
+  transition: all @duration @ease;
+}
+.inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
+  -webkit-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+  -moz-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+  box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+}
+.box-shadow(@arguments) {
+  -webkit-box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  box-shadow: @arguments;
+}
+.columns(@colwidth: 250px, @colcount: 0, @colgap: 50px, @columnRuleColor: #EEE, @columnRuleStyle: solid, @columnRuleWidth: 1px) {
+  -moz-column-width: @colwidth;
+  -moz-column-count: @colcount;
+  -moz-column-gap: @colgap;
+  -moz-column-rule-color: @columnRuleColor;
+  -moz-column-rule-style: @columnRuleStyle;
+  -moz-column-rule-width: @columnRuleWidth;
+  -webkit-column-width: @colwidth;
+  -webkit-column-count: @colcount;
+  -webkit-column-gap: @colgap;
+  -webkit-column-rule-color: @columnRuleColor;
+  -webkit-column-rule-style: @columnRuleStyle;
+  -webkit-column-rule-width: @columnRuleWidth;
+  column-width: @colwidth;
+  column-count: @colcount;
+  column-gap: @colgap;
+  column-rule-color: @columnRuleColor;
+  column-rule-style: @columnRuleStyle;
+  column-rule-width: @columnRuleWidth;
+}
+.translate(@x:0, @y:0) {
+  -moz-transform: translate(@x, @y);
+  -webkit-transform: translate(@x, @y);
+  -o-transform: translate(@x, @y);
+  -ms-transform: translate(@x, @y);
+  transform: translate(@x, @y);
+}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{%block content %}
+
+<h1>Enter name of the UserSet</h1>
+<form action='/createuserset' method='post'>
+<ul style='color:red'>
+	{% for error in errors %}
+		<li>{{ error }}</li>
+	{% endfor %}
+</ul>
+<p>
+	{{ success }}
+</p>
+<p>
+	UserSet name: <input type='text' name='name' />
+</p>
+<p>
+	<input type='submit' value='Create' />
+</p>
+</form>
+
+{% endblock %}

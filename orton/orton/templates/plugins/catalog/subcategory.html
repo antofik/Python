@@ -1,0 +1,56 @@
+{% extends "base_with_menu.html" %}
+
+{% load smart_load sekizai_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block content-top %}
+
+<div class='catalog'>
+    <div class='menu'>
+        <ul>
+            {% for category in categories %}
+                <li class='category'>
+                    <a href="{{ category.get_absolute_url }}"><span class='caption'>{{ category.name }}</span></a>
+                    <ul>
+                        {% for subcategory in category.subcategories %}
+                            <li class='subcategory'><a href="{{ subcategory.get_absolute_url }}"><span class='caption'>{{ subcategory.name }}</span></a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    <div class='content'>
+        {% for item in items %}
+            {% ifchanged item.subcategory_full %}
+                <div class='subcategory'>{{ item.subcategory_full }}</div>
+            {% endifchanged %}
+            <div class='item-container'>
+                <div class='item-image'>
+                    <div class='caption'>{{ item.name }}</div>
+                    {% thumbnail item.image.file.name "300x200" format="PNG" as im %}
+                        <a href="{{ item.get_absolute_url }}">
+                            <img class='image ' src="{{ im.url }}" alt="" />
+                        </a>
+                    {% endthumbnail %}
+                </div>
+                <div class='description'>
+                    <div class='purpose'><div class='caption'>Назначение:</div>{{ item.purpose }}</div>
+                    <div class='action'><div class='caption'>Действие:</div>{{ item.action }}</div>
+                </div>
+            </div>
+            <br/>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% addtoblock "js" %}
+    <script type="text/javascript">
+        $(function(){
+        });
+    </script>
+{% endaddtoblock %}

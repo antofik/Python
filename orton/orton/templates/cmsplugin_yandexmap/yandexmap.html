@@ -1,0 +1,115 @@
+{% load i18n %}
+<div class="plugin_yandexmap">
+    <!--  ATTENTION: set a height for this div in CSS -->
+    <div style='height: 450px' id="yandex-map-{{ object.id }}" class="yandex-map-container"></div>
+</div>
+
+<script src="http://api-maps.yandex.ru/2.0/?load=package.standard&mode=debug&lang=ru-RU" type="text/javascript"></script>
+<script type="text/javascript">
+    //<![CDATA[
+    function loadYandexMap(){
+        // save settings form plugin
+        var container = 'yandex-map-{{ object.id }}';
+        var latlng = ['133.575367','-25.813332']; // default to Australia
+
+        var title = "{{ object.get_title }}";
+        var address = "{{ object.zipcode }}, {{ object.city }}, {{ object.address }}";
+        var additional_content = "{{ object.get_content }}";
+        var zoom = {{ object.get_zoom_level }}
+
+        var map = new ymaps.Map(document.getElementById(container),  {
+                    center: latlng,
+                    zoom: 15,
+                    behaviors: ["default", "scrollZoom"]
+                }
+        );
+
+        /*ymaps.Styles.add("info_balloon", {
+            balloonContentStyle : {
+                template : new YMaps.Template('<div style="heigth:130px;">{% if object.title %}<strong>$[title]</strong><br/><br/>{% endif %}$[address]<br/>{% if object.get_content %}<br/>$[content]{% endif %}</div>')
+            }
+        });*/
+
+        {% if object.get_lat_lng %}
+            // load latlng from given lat lng settings
+            latlng = [{{ object.get_lat_lng|join:", " }}];
+            initYandexMaps(latlng);
+        {% else %}
+            // load latlng from given address
+            var geocoder = new ymaps.geocode(address, {results: 1, boundedBy: map.getBounds()});
+
+            // Результат поиска передается в callback-функцию
+            geocoder.then(
+                    function (res) {
+                        if (res.geoObjects.getLength()) {
+                            var point = res.geoObjects.get(0);
+                            initYandexMaps(point);
+                        }
+                    },
+                    // Обработка ошибки
+                    function (error) {
+                        alert("Возникла ошибка: " + error.message);
+                    }
+            )
+        {% endif %}
+
+        // initialize yandex maps
+        function initYandexMaps(point) {
+            // Добавление стандартного набора кнопок
+            map.controls.add("mapTools")
+                // Добавление кнопки изменения масштаба
+                    .add("zoomControl")
+                // Добавление списка типов карты
+                    .add("typeSelector");
+
+            // Создание метки
+            // Добавление полученного элемента на карту
+       //     map.geoObjects.add(point);
+            // Центрирование карты на добавленном объекте
+            map.panTo(point.geometry.getCoordinates(), {
+                        /* Опции перемещения:
+                         разрешить уменьшать и затем увеличивать зум
+                         карты при перемещении между точками
+                         */
+                        flying: true
+                    }
+            );
+
+            var coor = point.geometry.getCoordinates();
+            var myBalloonContentLayoutClass = ymaps.templateLayoutFactory.createClass(
+                    '<div style="width: 200px;padding: 8px;"><h3>{{ object.content }}</h3>' +
+                            '<p>Описание: {{ object.content }}</p>' +
+                            '<p>Население: $[properties.population|неизвестно]</p>' +
+                            '<p>Метрополитен: [if properties.metro]да[else]нет[endif]</p></div>'
+            );
+
+            var myPlacemark = new ymaps.Placemark(
+                    // Координаты метки
+                    [coor[0], coor[1]], {
+                        /* Свойства метки:
+                         - контент значка метки */
+                        iconContent: "{{ object.title }}",
+                        // - контент балуна метки
+                        balloonContent: "{{ object.content }}",
+                        metro: true
+                    }, {
+                        /* Опции метки:
+                         - флаг перетаскивания метки */
+                        draggable: false,
+                        /* - показывать значок метки
+                         при открытии балуна */
+                        hideIconOnBalloonOpen: true,
+                        preset: 'twirl#blueStretchyIcon'
+                        //balloonContentLayout: myBalloonContentLayoutClass
+                    }
+            );
+
+// Добавление метки на карту
+            map.geoObjects.add(myPlacemark);
+
+        }
+    }
+
+    ymaps.ready(loadYandexMap);
+    //]]>
+</script>

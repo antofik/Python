@@ -1,0 +1,476 @@
+{% extends "base_decorated.html" %}
+
+{% block head %}
+   {{ block.super }}
+    <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?52" xmlns="http://www.w3.org/1999/html"></script>
+   <script type="text/javascript" src="http://vk.com/js/api/share.js?11" charset="windows-1251"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery-color/jquery.color.js"></script>
+   <!--<script type="text/javascript" src="{{ MEDIA_URL }}plugins/jRating/jRating.jquery.custom.js"></script>-->
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/center.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/top.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/themes/default.js"></script>
+   <!--<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/jRating/jRating.jquery.css" media="screen" />-->
+{% endblock %}
+
+{% block jsscript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+    {% if dress.show_hint %}
+    $(function(){
+        try{
+            jQuery = $;
+            noty({
+                text: $('.hint-template').html(),
+                layout:'top',
+                type:'warning', 
+                buttons: [
+                    {addClass: 'btn btn-warning', text: 'Закрыть', onClick: function($noty) {
+                        $noty.close();
+                      }
+                    }
+                ],				
+                modal: true});
+        }catch(e){ //e.g. IE8
+        }
+    });
+    {% endif %}
+
+    function showBusyIndicator(callback, data){
+        noty({
+            text: 'Подождите, идёт обработка запроса...',
+            layout:'center',
+            type:'information',
+            callback: {afterShow: function(){callback(data);}},
+            closeWith: [],
+            modal: true});
+    }
+
+    function error_message(text){
+        try{
+            jQuery = $;
+            noty({
+                text: text,
+                layout:'center',
+                type:'error',
+                timeout: 3000,
+                modal: true});
+        }catch(e){
+            alert(text);
+        }
+    }
+
+    function success_message(text){
+        try{
+            noty({
+                text: text,
+                layout:'top',
+                type:'success',
+                timeout: 3000,
+                modal: true});
+        }catch(e){
+            console.log(e);
+            alert(text);
+        }
+    }
+
+    function format_buyer(buyer){
+        var template = $('.buyer-template').html();
+        template = template.split('{fio}').join(buyer.fio);
+        template = template.split('{phone}').join(buyer.phone);
+        template = template.split('{email}').join(buyer.email);
+        template = template.split('{date}').join(buyer.date);
+        return template;
+    }
+
+    function show_buyers(access_key){
+        $.ajax({type:'POST', url:'/get_buyers/{{ dress.id }}', dataType:'JSON',
+            data:{'access_key':access_key},
+            success: function(data, textStatus, jqXHR){
+                $.noty.closeAll();
+                if (data.ok){
+                    var value = "<div><h4>Список желающих примерять ваше платье</h4>";
+                    for (i in data.buyers){
+                        var buyer = data.buyers[i];
+                        value += format_buyer(buyer);
+                    }
+                    value += "</div>";
+                    noty({
+                        text: value,
+                        layout:'center',
+                        type:'success',
+                        buttons: [
+                            {addClass: 'btn btn-primary', text: 'Закрыть', onClick: function() {
+                                $.noty.closeAll();
+                                }
+                            }
+                        ],
+                        modal: true});
+                } else{
+                    error_message('Вы указали неверный код доступа');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                $.noty.closeAll();
+                error_message('Информация засекречена. Свяжитесь с нами по адресу contact@mfst.pro и опишите ситуацию');
+            }
+        });
+
+    }
+
+    function show_who_buy(){
+        jQuery = $;
+        noty({
+            text:"<div>Код доступа к платью</div><br/><div class='input-prepend'><span class='add-on'><i class='icon-key'></i></span><input type='text' class='access-key' /></div>",
+            layout:'center',
+            type:'information',
+            modal: true,
+            buttons: [
+                {addClass: 'btn btn-primary', text: 'Подтвердить', onClick: function($noty) {
+                    $.noty.closeAll();
+                    showBusyIndicator(show_buyers, $('.access-key').val());
+                }
+                },
+                {addClass: 'btn btn-danger', text: 'Отмена', onClick: function($noty) {
+                    $.noty.closeAll();
+                }
+                }
+            ]
+        });
+    }
+
+    function validate_reply(){
+        var fio = $('.noty_text .reply-fio').val();
+        var phone = $('.noty_text .reply-phone').val();
+        var email = $('.noty_text .reply-email').val();
+
+        if (fio.length<4){
+            error_message('Необходимо указать ваше имя');
+            return false;
+        }
+
+        if (phone.length<4){
+            error_message('Необходимо указать ваш номер телефона');
+            return false;
+        }
+
+        if (email.length<4){
+            error_message('Необходимо указать ваш email');
+            return false;
+        }
+
+        return true;
+    }
+
+    function sendNotification(fio, phone, email){
+        $.ajax({type:'POST', url:'/send_notification/', dataType:'JSON',
+            data:{id: '{{ dress.id }}', fio:fio, phone:phone, email:email },
+            success: function(data, textStatus, jqXHR){
+                        $.noty.closeAll();
+                        if (data.ok){
+                            noty({text: 'Сообщение было отправлено. Желаем удачи!', layout:'top', type: 'success', 'timeout': 3000});
+                        }else{
+                            alert('Не удаётся отправить письмо. Попробуйте связаться с хозяйкой самостоятельно. Телефон можно увидеть нажав кнопку "Хочу примерить"');    }
+                    },
+            error: function(jqXHR, textStatus, errorThrown){
+                            $.noty.closeAll();
+                            alert('Не удаётся отправить письмо. Попробуйте связаться с хозяйкой самостоятельно. Телефон можно увидеть нажав кнопку "Хочу примерить"');
+                    }
+            });
+    }
+
+    $(function(){
+        $('.who_buy').click(show_who_buy);
+        $('.btn-tryit').click(function(){
+            try{
+                jQuery = $;
+                noty({
+                    text: $('.price-info-template').html(),
+                    layout:'top', 
+                    type:'information', 
+                    buttons: [
+                        {addClass: 'btn btn-primary', text: 'Отправить хозяйке сообщение', onClick: function($noty) {
+                            if (!validate_reply()) return;
+                            var fio = $('.noty_text .reply-fio').val();
+                            var phone = $('.noty_text .reply-phone').val();
+                            var email = $('.noty_text .reply-email').val();
+
+                            $.noty.closeAll();
+
+                            jQuery = $;
+
+                            noty({
+                                text: 'Подождите, идёт отправка сообщения...',
+                                layout:'center',
+                                type:'information',
+                                buttons: [],
+                                callback: {afterShow: function(){sendNotification(fio, phone, email);}},
+                            modal: true});
+                          }
+                        },
+                        {addClass: 'btn btn-danger', text: 'Отмена', onClick: function($noty) {
+                            $.noty.closeAll();
+                            }
+                        }
+                    ],				
+                    modal: true});
+            }catch(e){ //e.g. IE8
+                $('.price-info-template').removeClass('hidden');
+                $('.default-send-button').removeClass('hidden');
+            }
+        });
+        $('.default-send-button').click(function(){
+            $.post('/send_notification/', {id: '{{ dress.id }}', message: $('.message').val() });
+            alert('Сообщение было отправлено. Желаем удачи!');
+            $('.price-info-template').addClass('hidden');
+            $('.default-send-button').addClass('hidden');
+        });
+		
+		$('.photo-preview').popover({
+			delay: 0
+		});
+    });
+
+{%  comment %}
+	$(document).ready(function(){		
+		$(".rating").jRating({
+			step:true,
+			length : 5,
+			rateMax : 5,
+			{% if rating > 0 %}isDisabled: true,{% endif %}            
+			bigStarsPath : '{{ MEDIA_URL }}plugins/jRating/icons/stars.png',
+			smallStarsPath : '{{ MEDIA_URL }}plugins/jRating/icons/small.png',
+			phpPath : '/rate-dress',
+			onSuccess : function(){				
+			},
+			onError : function(){				
+			}
+		});
+	});
+ {% endcomment %}
+
+    VK.init({apiId: 3069937, onlyWidgets: true});
+    VK.Widgets.Comments("vk_comments", {limit: 10, width: "1170", attach: "*"});
+    VK.Widgets.Like("vk_like", {type: "mini", height: 24});
+	VK.Observer.subscribe('widgets.comments.new_comment', function(num, last_comment, date, sign){
+	  // При добавлении нового комментария сработает эта функция 
+	  // num - количество комментариев
+	  // last_comment - текст последнего комментария
+	  // date - текущая дата в формате ISO 8601 (например, 2004-02-12T15:19:21+00:00)
+	  // sign - контрольная сумма md5 от конкатенации 4х строк: api_secret, date, num, last_comment.
+	});
+    </script>
+	
+{% endblock %}
+
+{% block toolbar-top %}
+	{% load ratings %}
+	{% rating_by_request request on dress.rating as vote %}
+	<button class='btn-tryit btn btn-info btn-large'>Хочу примерить!</button>
+	<a href='edit/{{ dress.id }}' class='btn-manage btn btn-warning btn-large'>Редактировать</a>
+	<a href='new' class='btn-create btn btn-primary btn-large'>Разместить объявление</a>
+    <div class="rating-container hidden"><div class="rating" id="{{ dress.rating.score }}_{{ dress.id }}"></div></div>
+    <div id='vk_share' class='visible-desktop'><script type="text/javascript"><!--
+            document.write(VK.Share.button('http://{{ vk_share_url }}',{type: "round", text: "Рассказать друзьям", url: 'http://{{ vk_share_url }}'}));
+        --></script></div>
+    <div id="vk_like" class='visible-desktop hidden'></div>    
+{% endblock %}
+
+{% block toolbar-bottom %}
+	<a href='/' class='btn btn-action btn-large'>Вернутся к списку</a>	
+	<button class='btn-tryit btn btn-info btn-large'>Хочу примерить!</button>
+	<a href='edit/{{ dress.id }}' class='btn-manage btn btn-warning btn-large'>Управление</a>
+	<a href='new' class='btn-create btn btn-primary btn-large'>Разместить объявление</a>
+{% endblock %}
+
+{% block content %}
+
+{% load thumbnail %}
+<div class="container dress-container">
+    <div class='buyer-template hidden'>
+        <div class='buyer-info'>
+            <span class='info'>
+                <span class='caption hidden'>Имя:</span>
+                <b><span class='value'>{fio}</span></b>
+            </span>
+            <span class='info'>
+                <span class='caption hidden'>Телефон:</span>
+                <span class='value'>{phone}</span>
+            </span>
+            <span class='info'>
+                <span class='caption hidden'>Email:</span>
+                <span class='value'>{email}</span>
+            </span>
+            <span class='info hidden'>
+                <span class='caption'>Дата:</span>
+                <span class='value'>{date}</span>
+            </span>
+        </div>
+    </div>
+	<div class='hidden price-info-template'>
+		<div class='price-info'>
+			<div class='price-info-holder'>
+				<div class='info'>
+					<span class='caption'>Имя хозяйки:</span>
+					<span class='value'>{{ dress.fio }}</span>
+				</div>
+				<div class='info'>
+					<span class='caption'>Телефон:</span>
+					<span class='value'>{{ dress.phone }}</span>
+				</div>
+				<div class='info'>
+					<span class='caption'>Примерка:</span>
+					<span class='value'>{{ dress.place }}</span>
+				</div>
+
+                <div class='delimeter'></div>
+
+                <div class='reply-form row-fluid'>
+                    <div class='span3 pull-left'>
+                        <span class='caption'>Ваше имя:</span>
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-user"></i></span><input class='reply-fio' type='text' />
+                        </div>
+                    </div>
+                    <div class='span3 pull-left'>
+                        <span class='caption'>Ваш телефон:</span>
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-volume-up"></i></span><input class='reply-phone' type='tel' />
+                        </div>
+                    </div>
+                    <div class='span3 pull-left'>
+                        <span class='caption'>Ваш email:</span>
+                        <div class="input-prepend">
+                             <span class="add-on"><i class="icon-envelope"></i></span><input class='reply-email' type='email' />
+                        </div>
+                    </div>
+                </div>
+
+                <div class='default-send-button hidden'>
+                    <button class='btn btn-success'>Отправить сообщение</button>
+                </div>
+			</div>
+		</div>
+	</div>
+	<div class='hint-template hidden'>
+		<div class='hint-info'>
+			<div class='hint-info-holder'>
+				<div class='info'>
+                    <br/>
+					<span class='value'>Сделайте первый шаг к продаже вашего платья: нажмите кнопку <b>"Рассказать"</b> и поделитесь новостью с друзьями Вконтакте. <b>Вас ждёт успех!</b></span>
+                    <br/>
+                        <div id='vk_share2' class='visible-desktop'><script type="text/javascript"><!--
+                                document.write(VK.Share.button(false,{type: "button_nocount", text: "Рассказать друзьям"}));
+                            --></script></div>     
+                    <br/>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="row data">
+        <div class="span12">            
+            <div class='row info'>
+                <div class='span5'>
+                    <span class='caption'>Стоимость:</span>
+                    <span class='value'>{{ dress.cost }}</span>
+                </div>
+                <div class='span5'>
+                    <nobr>
+                        <span class='caption'>Просмотров:</span>
+                        <span class='value'>{{ dress.views }}</span>
+                    </nobr>
+                </div>
+                <div class='span5'>
+                    <nobr><span class='caption'>Хотят примерить:</span>
+                    <span class='value'>{{ dress.buy_tries }}</span>
+                    {% if dress.buy_tries > 0 %}
+                        <button class='btn btn-info btn-mini who_buy'>Кто?</button>
+                    {%  endif %}
+                    </nobr>
+                </div>
+{% comment %}
+            </div>
+            <div class='row info'>
+{% endcomment %}
+                <div class='span5'>
+                    <span class='caption'>Платье для:</span>
+                    <span class='value'>{{ dress.type }}</span>
+                </div>
+                <div class='span5'>
+                    <span class='caption'>Цвет:</span>
+                    <span class='value'>{{ dress.color }}</span>
+                </div>
+                <div class='span5'>
+                    <span class='caption'>Размер:</span>
+                    <span class='value'>{{ dress.size }}</span>
+                </div>
+                <div class='span5'>
+                    <span class='caption'>Рост:</span>
+                    <span class='value'>{{ dress.height }}</span>
+                </div>
+                {% comment %}</div>
+            <div class='row info'>{% endcomment %}
+                <div class='span5'>
+                    <span class='caption'>Камни:</span>
+                    <span class='value'>{{ dress.svarovsky }}</span>
+                </div>
+                <div class='span5'>
+                    <span class='caption'>Сшито в:</span>
+                    <span class='value'>{{ dress.country }}</span>
+                </div>
+{% comment %}            </div>
+            <div class='row info'>{% endcomment %}
+                <div class='span11'>
+                    <span class='caption'>Состояние:</span>
+                    <span class='value'>{{ dress.state }}</span>
+                </div>
+            </div>
+            <div class='description'>
+                {{ dress.description }}
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='span12 photo_panel'>
+            <div class='holder'>
+                <ul class="thumbnails">
+                  <li class="span4 photo-preview" {% if dress.main_photo_description %} title='Описание' data-content='{{ dress.main_photo_description|default:"Отсутствует" }}' {% endif %}>
+                    <div class="thumbnail">
+                        <div class="img4" >
+                            {% thumbnail dress.main_photo "320" as im %}
+								<a rel='photo[gallery]' href='{{ dress.main_photo.url }}' data-title='{{ dress.main_photo_description }}' >
+									<div style="background-image:url({{ im.url }})" alt='{{ dress.main_photo_description }}'></div>
+								</a>
+                            {% endthumbnail %}                            
+                        </div>
+                    </div>
+                  </li>
+                  {% for photo in photos %}
+                    {% if not photo.is_main %}
+                      <li class="span2 photo-preview" {% if photo.description %} title='Описание' data-content='{{ photo.description }}' {% endif %}>
+                        <div class="thumbnail">
+                            <div class="img2" >
+                                {% thumbnail photo.image "160" as im %}
+                                    <a rel='photo[gallery]' href='{{ photo.image.url }}' title='{{ photo.description }}'>
+                                        <div style="background-image:url({{ im.url }})" alt='{{ photo.description }}'></div>
+                                    </a>
+                                {% endthumbnail %}                            
+                            </div>
+                        </div>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='span12'>
+            <div id="vk_comments"></div>
+        </div>
+    </div>
+</div>	
+    
+{% endblock %}

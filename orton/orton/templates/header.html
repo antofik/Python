@@ -1,0 +1,27 @@
+{% load cms_tags menu_tags %}
+
+<div class='content-holder'>
+    <div class='weather-short'>
+        {% include "pogoda-small.html" %}
+    </div>
+    {% include "socials.html" %}
+    <div class='main-menu-background'>
+        <a href="/" class="link"></a>
+    </div>
+    <ul class='main-menu'>
+        {% show_menu 0 1 1 1 %}
+    </ul>
+</div>
+<script type="text/javascript">
+        $(function(){
+            $('.main-menu>li').mouseenter(function(e){
+                $('.main-menu ul').hide();
+                $('ul', this).show();
+            });
+            $('.main-menu>li').mouseleave(function(){
+                //$('.main-menu ul').hide();
+                //$('.main-menu .selected ul').show();
+                //$('.main-menu .ancestor ul').show();
+            });
+        });
+</script>

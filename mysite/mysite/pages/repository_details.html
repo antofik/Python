@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{%block content %}
+
+<h1>Repository details: <b>{{ this.name|default:"Not found" }}</b></h1>
+<h2>
+	User group: <a href='/userset/{{this.userset}}'>{{ this.userset|default:"Default" }}</a>
+	(<a href='/createuserset'>Create new</a>)
+</h2> 
+
+<form action='/deleterepository/{{this.name}}' method='post'>
+	<input type='submit' value='Delete' />
+</form>
+
+
+{% endblock %}

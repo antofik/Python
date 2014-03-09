@@ -1,0 +1,11 @@
+<div class='login_control'>
+{% if user.is_authenticated %}
+	<a href="/accounts/profile">{{ user.username }}</a>
+	&nbsp;|&nbsp;
+	<a href="/accounts/logout">Выйти</a>
+{% else %}
+		<a href="/accounts/login">Авторизация</a>
+		&nbsp;|&nbsp;
+		<a href="/accounts/register">Регистрация</a>
+{% endif %}
+</div>

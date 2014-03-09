@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="{% block keywords %}algorithms, c++, python{% endblock %}" />
+	<meta name="description" content="{% block description %}Algorithm library: feel free to add one of your own and share it{% endblock %}" />
+    <meta name='yandex-verification' content='40c2d049d56ef746' />
+    <meta name="google-site-verification" content="y7fvbgPtqazA_5iwlt2N1k3LLFVnbCob--uWAOu5Gak" />
+	<title>{% if algorithm %}{{ algorithm.name }}{% else %}Algorithms Power{% endif %}</title>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/stylesheet.css?2" media="all" title="cssrefresh"/>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/bootstrap/css/bootstrap.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/bootstrap/css/bootstrap-responsive.css" media="all" />
+    <link href="{{ MEDIA_URL }}plugins/jquery-ui/css/sunny/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ MEDIA_URL }}plugins/tag-it/css/jquery.tagit.css" rel="stylesheet" type="text/css">
+    {% comment %}<script type="text/javascript" src="{{ MEDIA_URL }}js/cssrefresh.js"></script>{% endcomment %}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="{{ MEDIA_URL }}plugins/bootstrap/js/bootstrap.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/tag-it/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+	{% block head %} {% endblock %}
+
+    {% block javascript %} {% endblock %}
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">    
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/"><img src='{{ MEDIA_URL }}images/favicon.ico' height="32" width="32" style="vertical-align: middle; height: 32px; margin: -8px 8px -8px 0px;" />It's Algorithm Power</a>
+          <div style="margin-left: auto;margin-right:0;">
+              {% block fixed-buttons %}
+              {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class='page_background'>
+    {% block base-content %}{% endblock %}
+    </div>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-41180034-1', 'algo.pw');
+      ga('send', 'pageview');
+    </script>
+</body>
+</html>

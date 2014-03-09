@@ -1,0 +1,262 @@
+{% extends "base_decorated.html" %}
+
+{% block head %}
+   {{ block.super }}
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/top.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/center.js"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/themes/default.js"></script>
+  
+   <script src="{{ MEDIA_URL }}plugins/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
+   <script src="{{ MEDIA_URL }}plugins/jquery.fileupload/js/jquery.iframe-transport.js"></script>
+   <script src="{{ MEDIA_URL }}plugins/jquery.fileupload/js/jquery.fileupload.js"></script>  
+   <script src="{{ MEDIA_URL }}plugins/jquery.fileupload/js/jquery.fileupload-fp.js"></script>   
+   <script src="{{ MEDIA_URL }}plugins/jquery.fileupload/js/jquery.fileupload-ui.js"></script>   
+   <script src="{{ MEDIA_URL }}plugins/jquery.fileupload/js/locale.js"></script> 
+{% endblock %}
+
+{% block jsscript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+    var imageId = 1;    
+    function addImageLoadControl(){
+        var template = $('#template').html();
+        template = template.split('{id}').join(imageId++);
+        $(template).insertBefore('.submit');
+    }
+    //$(addImageLoadControl);
+    
+    function imageLoaded(loader){
+        transfromImageControl(loader, imageId-1);
+        addImageLoadControl();
+    }
+    
+    //Превращает поле для загрузки картинки в поле для просмотра загруженной картинки и кнопки "Удалить"
+    function transfromImageControl(input, id){   
+        if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#field-image'+id+' .image')
+                        .attr('src', e.target.result)
+                        .width(120);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+        }else{
+            $('#field-image'+id+' .image')
+                .attr('src', '{{ MEDIA_URL }}images/default_dress.jpg')
+                .width(120)
+                .height(160);
+        }
+        $('#field-image'+id+' .stage1').hide();
+        $('#field-image'+id+' .stage2').show();
+        $('#field-desc'+id).show();
+    }
+    
+    function remove(button){
+        var id = $(button).data('id');
+        values = $('#photos_to_delete').val().split('|')
+        values.push(id);
+        $('#photos_to_delete').val(values.join('|'));
+        $('#field-image'+id).remove();        
+        $('#field-desc'+id).remove();        
+    }
+    
+    $(function(){
+        $('.submit').click(function(e){
+            jQuery = $;
+            {% if is_new %}
+            noty({
+				text:'Подождите, идёт обработка запроса. Вам на почту будет выслано письмо с дальнейшими инструкциями',
+				//template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div><div><img src='{{ MEDIA_URL }}images/InProgress.gif'/></div></div>',
+				layout:'center', 
+				type:'information', 
+				modal: true});
+            {% else %}
+            noty({
+				text:'Подождите, идёт обработка запроса и сохранение данных...',
+				//template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div><div><img src='{{ MEDIA_URL }}images/InProgress.gif'/></div></div>',
+				layout:'center', 
+				type:'information', 
+				modal: true});
+            {% endif %}
+			//e.preventDefault();
+        });
+
+		$('.helper').popover({trigger:'focus', selector:'input, textarea, select', placement: 'right'});
+        
+        $('#id_main_photo').change(function(){
+            $('#id_main_photo_preview').remove();            
+            if (this.files && this.files[0]) {
+                $('#id_main_photo').after('<div style="margin: 4px;"><img id="id_main_photo_preview" class="image"></img></div>');
+                
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#id_main_photo_preview')
+                        .attr('src', e.target.result)
+                        .width(120);
+                };
+
+                reader.readAsDataURL(this.files[0]);
+            }
+            else{
+                $('#id_main_photo').after('<div style="margin: 4px;"><img id="id_main_photo_preview" class="image" style="display:block"></img></div>');
+                
+                $('#id_main_photo_preview')
+                    .attr('src', '{{ MEDIA_URL }}images/default_dress.jpg')
+                    .width(120).height(160);
+            }
+        });
+    });
+    
+    var first = {{ dress.photo_set.all|length }}==0;
+    
+    $(function () {
+		$('#fileupload').fileupload({
+			dataType: 'json',
+            autoUpload: true,
+			maxFileSize: 10000000,
+			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+			done: function (e, data) {
+				$.each(data.result, function (index, photo) {
+					var template = $('#template').html();
+					template = template.split('{id}').join(photo.id);
+					template = template.split('{url}').join(photo.thumbnail_url);
+					template = template.split('{size}').join(Math.round(photo.size/1024));
+					template = template.split('{name}').join(photo.name);
+                    if (first){
+                        template = template.split('{checked}').join('checked');
+                        first = false;
+                    }else{
+                        template = template.split('{checked}').join('');
+                    }
+					
+					$(template).insertBefore('.uploadpanel');
+				});
+			},
+			fail: function (e, data) {
+				//todo
+			},
+            formData: {
+				id: {{ dress.id }}
+            },
+			start: function(){
+				$('#progress').show();
+				jQuery = $;
+				try{this.noty.close();}catch(err){}
+				this.noty = noty({
+					text:'Подождите, идёт загрузка фотографий...',
+					//template: '<div class="noty_message"><span class="noty_text"></span><div class="progress progress-striped progress-warning active" id="alert-progress"><div class="bar" style="width: 0%;"></div></div><div class="noty_close"></div></div>',
+					timeout: 3000,
+					dismissQueue: true,
+					layout:'top', 
+					type:'success'});
+
+			},
+			stop: function(){
+				$('#progress').hide();
+				try{ this.noty.close(); }catch(err){}
+			},
+			progressall: function (e, data) {
+					var progress = parseInt(data.loaded / data.total * 100, 10);
+					$('.progress .bar').css('width', progress + '%');
+			}
+		});
+	});
+
+    </script>
+
+{% endblock %}
+
+{% block toolbar-top %}
+	<a href='/' class='btn-tryit btn btn-info btn-large'>Вернутся к списку</a>
+{% endblock %}
+
+{% block toolbar-bottom %}
+	<a href='/' class='btn-tryit btn btn-info btn-large'>Вернутся к списку</a>
+{% endblock %}
+
+{% block content %}
+	{% load thumbnail %}
+
+	<div class="dress-new">
+			<div class='well'>
+				Загрузите фотографии турнира и опубликуйте их
+			</div>
+			<form enctype="multipart/form-data" method='post' class='form-horizontal'>{% csrf_token %}
+                {{ form.errors }}
+				{% for field in form.visible_fields %}
+					<fieldset>
+						<div class="control-group {% if form.errors %}{% if field.errors %}error{% else %}success{% endif %}{% endif %}">
+						  <label class="control-label">{{ field.label }} <span class='required'>*</span>:</label>
+						  <div class="controls">
+							<span class='helper' title='Подсказка' data-content='{{ field.help_text }}'>
+								{{ field }}
+							</span>
+							<span class='help-inline'>{{ field.errors }}</span>
+						  </div>
+						</div>
+					</fieldset>
+				{% endfor %}   
+
+				<input type='hidden' id='photos_to_delete' value='' name='photos_to_delete' />
+				<input type='hidden' value='{{ dress.id }}' name='tournament_id' />
+						
+				<fieldset>
+					<legend>Фотографии</legend>
+					<span class='photo-error'>{{ form.main_photo_id.errors }}</span>
+				</fieldset>
+				<div class='hidden' id='template'>
+					<fieldset id='field-image{id}' class='imagefield'>
+						<div class="control-group">
+						  <label class="control-label">
+							<input type="radio" name="main_photo_id" value="{id}" {checked}>Показывать как основную
+						  </label>
+						  <div class="controls">
+							<img class='image' src='{url}' />
+							<textarea name='description{id}' class='description span4' maxLength='256'></textarea>
+							<input type='button' class='close remove' onclick='remove(this);' data-id='{id}' value='&times;'>                          
+							<span class='help-inline'></span>
+						  </div>
+						</div>
+					</fieldset>
+				</div>
+				
+				{% for photo in dress.photo_set.all %}
+					<fieldset id='field-image{{ photo.id }}' class='imagefield'>
+						<div class="control-group">
+						  <label class="control-label">
+							<input type="radio" name="main_photo_id" value="{{ photo.id }}" {% if photo.is_main %}checked {% else %} {% if form.main_photo_id.value == photo.id|lower %}checked{% endif %} {% endif %} >Показывать как основную
+						  </label>
+						  <div class="controls">
+							<img class='image' src='{{ MEDIA_URL }}{{ photo.image }}' />
+							<textarea name='description{{ photo.id }}' class='description span4' maxLength='256'>{{ photo.description }}</textarea>
+							<input type='button' class='close remove' onclick='remove(this);' data-id='{{ photo.id }}' value='&times;'>                          
+							<span class='help-inline'></span>
+						  </div>
+						</div>
+					</fieldset>
+				{% endfor %}
+                
+                <div class='uploadpanel'>
+                    <div class='btn btn-warning fileinput-button'>
+                        <!--<button id='loadPhotos' class='btn btn-warning btn-large'>Загрузить фотографии...</button>-->
+                        <i class='icon-plus icon-white' ></i>
+                        <span>Загрузить фотографии...</span>
+                        <input id="fileupload" class='btn btn-info' type="file" name="files[]" data-url="/load_photo" multiple>
+                    </div>
+                </div>
+				
+				<fieldset id='progress' style='display:none'>
+					<label class="control-label">Загрузка фотографий:</label>
+					<div class="progress progress-striped active">
+						<div class="bar" style="width: 0%;"></div>
+					</div>
+				</fieldset>
+
+				<input type='submit' class='submit btn btn-success btn-large' value='Опубликовать фотографии'>
+			</form>
+	</div>
+{% endblock %}

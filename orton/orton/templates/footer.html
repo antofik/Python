@@ -1,0 +1,15 @@
+{% load cms_tags catalog_tags %}
+
+{% render_placeholder "footer" as footer %}
+{% render_placeholder "footer-left" as lfooter %}
+{% render_placeholder "footer-right" as rfooter %}
+
+{% if footer or lfooter or rfooter %}
+<div class='footer-container'>
+    <div class='footer'>
+        {{ footer }}
+        <span class='left'>{{ lfooter }}</span><span style='clear:both'></span>
+        <span class='right'>{{  rfooter }}</span><span style='clear:both'></span>
+    </div>
+</div>
+{% endif %}

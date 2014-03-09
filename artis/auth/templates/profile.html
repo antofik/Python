@@ -1,0 +1,35 @@
+﻿{% extends "base.html" %}
+
+{% block auth %}
+	<div class='login-form'>
+		<p>
+			<h1 class='invitation'>Профиль пользователя {{ request.user.username }}</h1>			
+		</p>
+		
+		<table class="data" style="margin: auto">
+			<thead>
+				<tr class="group">
+					<td>Название заказа</td>
+					<td>Описание заказа</td>
+					<td>Дата заказа</td>
+					<td>Дата пошива</td>
+					<td>Код</td>
+				</tr>
+			</thead>
+			{% for order in orders %}
+			<tr class="item">
+				<td>{{ order.title }}</td>
+				<td>{{ order.text }}</td>
+				<td>{{ order.added.date }}</td>
+				<td>{{ order.date_ready.date }}</td>
+				<td>{{ order.code }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+        
+        <p>
+            <a href='/online'>Перейти к основному сайту</a>
+        </p>
+        
+	</div>
+{% endblock %}

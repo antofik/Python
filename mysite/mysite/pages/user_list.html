@@ -1,0 +1,38 @@
+﻿{% extends "base.html" %}
+
+{%block content %}
+
+<h1>List of users of {{ name }}</h1>
+
+<form action='/adduser' method='post'>
+<input type='hidden' name='userset' value='{{ name }}' />
+<select name='username'>
+	{% for user in availableusers %}
+	<option value='{{ user }}'>{{ user }}</option>
+	{% endfor %}
+</select>
+<a href=''>Add</a>
+</form>
+
+<form action='/createuser' method='post'>
+<div class='groupbox'>
+	<input type='hidden' name='userset' value='{{ name }}' />
+	<p>
+		Имя: <input name='username' />
+	</p>
+	<p>
+		Пароль: <input name='password' />
+	</p>
+	<input type='submit' value='Create' />
+</div>
+</form>
+
+<ul>
+{% for user in users %}
+	<li>
+		{{ user }}
+	</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

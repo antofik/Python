@@ -1,0 +1,25 @@
+{% extends "plugins/catalog/base_video.html" %}
+
+{% load catalog_tags %}
+
+{% block video-content %}
+    <div class='video-item-details'>
+        <div class='title'>{{ item.name }}</div>
+        {% if item.youtube %}
+            <iframe width="960" height="600" src="{{ item.youtube_url|safe }}" frameborder="0" allowfullscreen></iframe>
+        {% else %}
+            {% show_catalog_video item "960x600" %}
+        {% endif %}
+        <div class='socials'>
+            <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+            <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="button" data-yashareQuickServices="vkontakte,facebook,odnoklassniki,moimir"></div>
+        </div>
+        <br/>
+        <div class='description'>
+            {{ item.description|safe }}
+        </div>
+        <div class='terminator'>
+            <a href='{{ item.get_absolute_url_of_list }}'>Все видео</a>
+        </div>
+    </div>
+{% endblock %}

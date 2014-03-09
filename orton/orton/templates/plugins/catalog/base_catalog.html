@@ -1,0 +1,26 @@
+{% extends current_page.get_template %}
+
+{% load smart_load sekizai_tags catalog_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block content-middle %}
+    {{ block.super }}
+<div class='catalog'>
+    {% show_catalog_menu selected_category %}
+    {% block catalog-content %} {% endblock %}
+</div>
+
+{% addtoblock "js" %}
+    <script type="text/javascript">
+        $(function(){
+            $('.catalog .help').mouseenter(function(){
+                $('.description', this).show();
+            });
+            $('.catalog .help').mouseleave(function(){
+                $('.description', this).hide();
+            });
+        });
+    </script>
+{% endaddtoblock %}
+
+{% endblock %}

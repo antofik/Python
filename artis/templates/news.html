@@ -1,0 +1,76 @@
+﻿{% extends "base_with_menu.html" %}
+
+
+{% block content %}
+{% load thumbnail %}
+<div class='page_news'>
+    <div class='text-overlay'></div>
+	<h1>Новости</h1>
+	<table class="wrap">
+		<tr>
+			<td class="middle">
+				<div class="slider-wrap">
+					<div class="slider">
+						{% for item in items %}
+							<div class="slider-item">
+								<!-- <img class='image' src="/media/{{ item.image }}" /> -->
+                                {% thumbnail item.image "x200" format="PNG" as im %}
+                                    <img class='image' src="{{ im.url }}" />
+                                {% endthumbnail %}
+
+
+                                <div class="title">{{ item.title }}</div>
+								<div class="text">{{ item.text|safe }}</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+    <div class='arrows'>
+        <div class="arrow arrow-left disabled"></div>
+        <div class="arrow arrow-right"></div>
+    </div>
+	
+</div>	
+{% endblock %}
+<script>
+{% block jsscript %}
+    var speed = 'fast';
+	$(function(){
+
+		$('.slider-item').hide().first().show();
+		$('.arrow-left').click(function(){
+			var index = $('.slider .slider-item:visible').index();
+			var last = $('.slider .slider-item:last').index();
+			
+			if (index > 0) {
+				$($('.slider .slider-item')[index-1]).show(speed);
+				$($('.slider .slider-item')[index]).hide(speed);
+				if (index == 1) 
+					$('.arrow-left').addClass('disabled');
+				$('.arrow-right').removeClass('disabled');
+			}
+		});
+		$('.arrow-right').click(function(){
+			var index = $('.slider .slider-item:visible').index();
+			var last = $('.slider .slider-item:last').index();
+			
+			if (index < last) {
+				$($('.slider .slider-item')[index+1]).show(speed);
+				$($('.slider .slider-item')[index]).hide(speed);
+				if (last - index == 1)
+					$('.arrow-right').addClass('disabled');
+				$('.arrow-left').removeClass('disabled');
+			}
+		});
+		var i = 1;
+		window.setInterval(function(){
+			$('.img'+i).fadeOut();
+			if (i<12) {i++;} else {i=1}
+			$('.img'+i).fadeIn();
+		}, 2500);
+	});
+{% endblock %}
+</script>

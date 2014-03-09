@@ -1,0 +1,191 @@
+﻿{% extends "base_with_menu.html" %}
+
+{% block head %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.mousewheel.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.jScrollPane.js"></script>
+{% endblock %}
+
+{% block jsscript %}    
+    {{ block.super }}
+
+    var calendar;
+	$(function() {
+		calendar = $( "#datepicker" ).datepicker({
+            onSelect: dateChanged
+        });
+	});
+    
+    function dateChanged(){
+        reloadItems('action=empty');
+    }
+
+    function reloadItems(params){
+        var dateText = calendar[0].value;
+        var m = dateText.split('/')[0];
+        var d = dateText.split('/')[1];
+        var y = dateText.split('/')[2];
+        var dateFormatted = y + "-" + (m) + "-" + d;
+        $.get('online/entries/' + dateFormatted + '?' + params, function(data) {
+          $('.entries').html(data);
+        });
+    }
+    
+    position = 1
+    max_measure = {{ measure_types|length }}
+	$(function() {
+		$(".next a" ).click(function(e){
+            position++;
+            if (position>max_measure) position = 1
+            e.preventDefault();
+            switch_to_measure(position);
+        });
+		$(".prev a" ).click(function(e){
+            position--;
+            if (position==0) position = max_measure
+            e.preventDefault();
+            switch_to_measure(position);
+        });
+	});
+    
+    function switch_to_measure(){
+        $('.measure').hide();
+        $('.measure_'+position).show();
+    };
+    
+    measures = true;
+    function switch_measures(){
+        if (measures){
+            $('.measures').hide();
+            $('.form').show();
+            $('#online-scroll').jScrollPane({showArrows:true, scrollbarHeight: 40});
+        }else{
+            $('.measures').show();
+            $('.form').hide();
+        }
+        measures = !measures;
+    };
+	$(function() {
+        $('#cmdSave').click(function(){
+            var values = [];
+            $('.measure-item').each(function(i,item){
+                var value = $(item).val();
+                var type_id = $(item).data('type');
+                values.push(type_id + ' ' + value);
+            });
+
+            do_after_login(function(){
+                $.ajax({
+                    type: 'POST',
+                    url: 'online/measures',
+                    data: {
+                        'values': values,
+                    },
+                    success: function(){
+                        alert('Мерки были успешно отправлены');
+                    },
+                    error: function(){
+                        alert('Ошибка при отправлении данных');
+                    }
+                });
+            });
+
+        });
+
+		$(".goto_form a, .goto_measure a" ).click(function(e){
+            e.preventDefault();
+            switch_measures();
+        });
+	}); 
+    $('a.close').live('click', function(e){
+        e.preventDefault();
+        reloadItems('&action=remove&type='+this.rel);
+    });
+    $('li.empty a').live('click', function(e){
+        e.preventDefault();
+        if (!logged){
+            document.location = "http://fabricartis.ru/accounts/login?next=http://fabricartis.ru/online";
+            return;
+        }
+        reloadItems('&action=subscribe&type='+this.rel);
+    });
+
+    function save_measure(type_id, value)
+    {
+        $('input[name=measure][rel=type_'+type_id+']').val(value);
+    }
+{% endblock %}
+
+{%block content %}
+<div class='page_online'>
+	<h1>On-line запись</h1>
+    
+	<div class='header'>
+    </div>
+
+	<div class='container'>
+        <div class='calendar'>
+            <div id="datepicker"></div>
+        </div>
+		<div class="vr" style="float: left"></div>
+        <div class='entries'>
+            {% include "entry_list.html" %}
+        </div>
+		<div class="vr" style="float: left"></div> 
+        <div class='measures'>
+            <div>
+            {% for measure_type in measure_types %}
+                <div class='measure measure_{{ forloop.counter }}' {% if not forloop.first %}style='display:none'{% endif %}>
+                    <div class='title'>{{ measure_type.name }}</div>
+                    <div class='prev'><a href='#'><img src='{{ MEDIA_URL }}images/online/left.png'></a></div>
+                    <div class='next'><a href='#'><img src='{{ MEDIA_URL }}images/online/right.png'></a></div>
+                    <div class='image'>
+                        {% if measure_type.image %}
+                        <img src='{{ MEDIA_URL }}{{ measure_type.image }}' />
+                        {% else %}
+                        <img src='{{ MEDIA_URL }}images/online/default_body.png' />
+                        {% endif %}
+                    </div>
+                    <div class='description'><p>{{ measure_type.description|default:"Описание отсутствует" }}</p></div>
+                    <div class='value'>Значение:
+                        <input onblur='save_measure({{ measure_type.id }}, this.value)' name="measure" rel="type_{{ measure_type.id }}" value='{{ measure_type.measure.value|default_if_none:"" }}'>
+                        см
+                    </div>
+                    <div class='goto_form'><a href='#'>Перейти к своим меркам</a></div>
+                </div>
+            {% endfor %}
+            </div>            
+        </div>
+        
+        <div class='form' style='display:none'>
+            <table style='width: 290px;'>
+                <tr>
+                    <td>
+                        <div style='overflow-y:auto;max-height: 290px;' id="online-scroll">
+                            <table>
+                            {% for measure_type in measure_types %}
+                                <tr>
+                                    <td>{{ measure_type.name }}</td>
+                                    <td><input class='measure-item' data-type='{{ measure_type.id }}' onblur='save_measure({{ measure_type.id }}, this.value)' name="measure" rel="type_{{ measure_type.id }}" value='{{ measure_type.measure.value|default_if_none:"" }}'></td>
+                                    <td>см</td>
+                                </tr>
+                            {% endfor %}
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='10'>
+                        <div class='send'><input type='button' id="cmdSave" value='Отправить'></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='10'>
+                        <div class='goto_measure'><a href='#'>Назад к инструкции</a></div>
+                    </td>
+                </tr>
+            </table>            
+        </div>
+	</div>
+</div>
+{% endblock %}

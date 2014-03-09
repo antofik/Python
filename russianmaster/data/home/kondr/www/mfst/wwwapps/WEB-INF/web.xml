@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>java</display-name>
+  <listener>
+    <listener-class>kondr.KServlet.KContext</listener-class>
+  </listener>
+  
+  <context-param>
+    <param-name>debug</param-name>
+    <param-value>debug</param-value>
+  </context-param>
+  <!-- 
+  <context-param>
+    <param-name>dataBase-test</param-name>
+    <param-value>localhost:3306/test;test;test</param-value>
+  </context-param>
+   -->
+  <context-param>
+    <param-name>dataBase-forum</param-name>
+    <param-value>localhost:3306/kondr_mfst;kondr_umfst;asdwtey29Gd</param-value>
+  </context-param>
+  <!--
+  <context-param>
+    <param-name>dataBase-cup</param-name>
+    <param-value>localhost:3308/cup_test;curator;mfstsuper</param-value>
+  </context-param>
+   -->
+  <context-param>
+    <param-name>dataBase-cup</param-name>
+    <param-value>localhost/cup2012;rating;asdf1234</param-value>
+  </context-param>
+  
+  <servlet>
+    <servlet-name>js</servlet-name>
+    <servlet-class>kondr.dance.JsServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>captcha</servlet-name>
+    <servlet-class>kondr.KServlet.KCapture</servlet-class>
+    <init-param>
+      <param-name>param1</param-name>
+      <param-value>value1</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>cup</servlet-name>
+    <servlet-class>kondr.dance.Cup</servlet-class>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>forum</servlet-name>
+    <servlet-class>kondr.dance.Forum</servlet-class>
+    <load-on-startup>4</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>reg</servlet-name>
+    <servlet-class>kondr.dance.Reg</servlet-class>
+    <load-on-startup>5</load-on-startup>
+  </servlet>
+
+  <!-- 
+  <servlet-mapping>
+    <servlet-name>js</servlet-name>
+    <url-pattern>/j/*</url-pattern>
+  </servlet-mapping>
+  -->
+  <servlet-mapping>
+    <servlet-name>captcha</servlet-name>
+    <url-pattern>/c/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>cup</servlet-name>
+    <url-pattern>/cup/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>forum</servlet-name>
+    <url-pattern>/forum/*</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>reg</servlet-name>
+    <url-pattern>/reg/*</url-pattern>
+  </servlet-mapping>
+</web-app>

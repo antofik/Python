@@ -1,0 +1,27 @@
+{% load smart_load catalog_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+<div class='documents'>
+    <div class='header'>Свидетельства и Удостоверения препаратов</div>
+    {% for item in items %}
+        <div class='document {% if forloop.counter|divisibleby:"2" %}even{% endif %}'>
+            <div class='name'>{{ item.name }}</div>
+            {% if item.doc %}
+                <a href="{{ item.doc.url }}"><img class='image doc' src="{{ MEDIA_URL }}images/filetypes/word.png" /></a>
+            {% endif %}
+            {% if item.pdf %}
+                <a href="{{ item.pdf.url }}"><img class='image pdf' src="{{ MEDIA_URL }}images/filetypes/pdf.png" /></a>
+            {% endif %}
+            {% if item.xls %}
+                <a href="{{ item.xls.url }}"><img class='image xls' src="{{ MEDIA_URL }}images/filetypes/excel.png" /></a>
+            {% endif %}
+            {% if item.rar %}
+                <a href="{{ item.rar.url }}"><img class='image rar' src="{{ MEDIA_URL }}images/filetypes/rar.png" /></a>
+            {% endif %}
+            {% if item.img %}
+                <a href="{{ item.img.url }}"><img class='image img' src="{{ MEDIA_URL }}images/filetypes/image.png" /></a>
+            {% endif %}
+            <div class='description'>{{ item.description|safe }}</div>
+        </div>
+    {% endfor %}
+</div>

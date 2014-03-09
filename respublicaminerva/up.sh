@@ -1,0 +1,1 @@
+svn up; supervisorctl stop respublicaminerva.ru; supervisorctl start respublicaminerva.ru; chmod 777 uwsgi.sock

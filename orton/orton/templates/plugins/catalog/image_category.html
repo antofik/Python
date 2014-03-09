@@ -1,0 +1,37 @@
+{% extends "plugins/catalog/base_image_catalog.html" %}
+
+{% load smart_load sekizai_tags catalog_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block catalog-content %}
+    <div class='content'>
+        <div class='title'>Продукция</div>
+        <div class='separator'></div>
+        {% for item in items %}
+            <div class='item-image-container'>
+                    {% thumbnail item.image.file.name "125x125" format="PNG" as im %}
+                        <a href="{{ item.get_absolute_url }}">
+                            <img class='image ' src="{{ im.url }}" alt="" />
+                        </a>
+                        <div class='image-hint'>
+                            {% show_catalog_item_short item %}
+                        </div>
+                    {% endthumbnail %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {% addtoblock "js" %}
+        <script type="text/javascript">
+            $(function(){
+                $('.item-image-container').mouseenter(function(){
+                  //temporarily uncommented  $('.image-hint', this).show();
+                });
+                $('.item-image-container').mouseleave(function(){
+                    $('.image-hint', this).hide();
+                });
+            });
+        </script>
+    {% endaddtoblock %}
+
+{% endblock %}

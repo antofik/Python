@@ -1,0 +1,162 @@
+a{
+    color: rgba(116,29,16, 1);
+}
+a:link, a:visited{
+    color: rgba(116,29,16, 1);
+}
+a:hover{
+    color: #ff8c00;
+}
+
+body{
+    background: url(/media/images/admin/bar_test.jpeg);
+    div#container{
+        //min-width: 640px;
+        div#header{
+            background: rgba(0, 0, 0, 0.6);//#8b4513;
+
+            #branding{
+                #site-name{
+                    color: rgba(170,103,43, 0.5);
+                }
+            }
+        }
+        div.breadcrumbs{
+            background: rgba(0, 0, 0, 0.8);
+            border-width: 0;
+            & > a{
+                color: #ff8c00;
+                &:hover{
+                    color: white;
+                }
+            }
+        }
+        div#content{
+            border: 2px solid orange;
+            //margin-left: auto !important;
+            //margin-right: auto !important;
+            margin-top: 32px;
+            //width: auto;
+            padding: 8px;
+            //max-width: 960px;
+            background-color: rgba(255,255,255, 0.8);
+
+            & > h1{
+                text-align: center;
+                padding: 16px;
+                padding-bottom: 46px;
+                font-size: 1.8em;
+                color: rgba(170,103,43, 0.5);
+            }
+            .custom-module{
+                float: left;
+                width: 47%;
+                display: block;
+                margin: 0px;
+                padding: 0px;
+                height: 100%;
+                min-height: 100%;
+                background: rgba(170,103,43, 0.2);
+                border: solid 1px rgba(170,103,43, 1);
+                margin-top: 1%;
+                margin-bottom: 1%;
+                margin-left: 1%;
+                margin-right: 1%;
+
+                .custom-summary-table{
+                    background: transparent;
+                    & > tbody > tr:hover{
+                        background: rgba(170,103,43, 0.5);
+                    }
+                    & > tbody > tr > th > a{
+                        display: inline-block;
+                        min-width: 250px;
+                    }
+                    & > tbody > tr > th > a, & > tbody > tr > td > a{
+                       // min-width: 100px;
+                        &:hover{color: #ffdddd}
+                    }
+                }
+            }
+
+            .custom-table, .custom-row{
+                float: left;
+                width: 100%;
+                position: relative;
+                &.custom-last-row{
+                    //float: none;
+                    margin: 0px;
+                    .custom-module{
+                        //float: none;
+                        width: 96.2%;
+                    }
+                }
+            }
+            .custom-caption{
+                background: rgba(170,103,43, 1);
+                line-height: 30px;
+                padding-right: 12px;
+                text-align: right;
+                img{
+                    float: left;
+                    width: 16px;
+                    height: 16px;
+                    margin-top: 7px;
+                    margin-left: 3px;
+                    display: none;
+                }
+                a{
+                    font-weight: bold;
+                    cursor: default;
+                    color: #ffdddd;
+                    margin: auto;
+                }
+            }
+
+            #user-tools{
+
+            }
+            #recent-actions-module{
+                position: relative;
+                float: right;
+                width: 210px;
+                top: -102px;
+                //border: none;
+                border: solid 1px orange;
+                h2{
+                    background: rgb(170, 103, 43);
+                    color: #ffdddd;
+                    text-align: center;
+                    //line-height: 30px;
+                    vertical-align: middle;
+                }
+            }
+        }
+        div#footer{
+
+        }
+    }
+
+    .row1{
+        background-color: rgba(170,103,43, 0.1);
+    }
+}
+
+
+
+.dashboard{
+    div#container{
+        #content{
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: auto;
+        max-width: 960px;
+        }
+    }
+}
+
+.plugin-editor{
+    iframe{
+        height: 800px !important;
+    }
+}

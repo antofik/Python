@@ -1,0 +1,1 @@
+/home/kondr/www/mfst/wwwapps/java.war

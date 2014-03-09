@@ -1,0 +1,16 @@
+<div class='current-date'>
+    {{ date }}
+</div>
+<ul>
+   {% for entry in entries %}
+        <li class="{% if entry.empty %}empty{% else %}{% if entry.mine %}mine{% else %}other{% endif %}{% endif %}">
+            {{ entry.start|date:"G:i" }} - {{ entry.end|date:"G:i" }} <a href="#" rel="{{ entry.id }}">{{ entry.type }}</a>{% if entry.mine %}
+			&nbsp;
+			&nbsp;
+			&nbsp;
+            <a href="#" class="close" rel="{{ entry.id }}">
+            	<img src="/media/images/online/close.png" style="position: relative; top: 3px; left: -20px;" alt="x" />
+            </a>{% endif %}
+        </li>
+    {% endfor %}
+</ul>

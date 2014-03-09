@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+
+
+{% block fixed-buttons %}
+    <div class="btn-group" style="margin-left: 8px; float: right">
+        <button id="cmdNew" class='btn btn-success dropdown-toggle' data-toggle="dropdown" style="width: 120px;" >
+            New
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu">
+            <li><a tabindex="-1" href="/create/{{ implementation.language.id }}">{{ implementation.language.name }}</a></li>
+            <li class="divider"></li>
+            {% for item in popular_languages %}
+                <li><a tabindex="-1" href="/create/{{ item.id }}">{{ item.name }}</a></li>
+            {% endfor %}
+            {% if popular_languages %}<li class="divider"></li>{% endif %}
+            <li><a tabindex="-1" href="/create">More...</a></li>
+        </ul>
+    </div>
+    <button id="cmdFork" class='btn btn-warning' style="width: 120px; margin-left: 8px; float: right;">Save in fork</button>
+    <button id="cmdSave" class="btn btn-danger" style="width: 120px; margin-left: 8px; float: right; display: none">Save</button>
+{% endblock %}
+
+{% block keywords %}{{ algorithm.name }}{% for tag in tags %},{{ tag }}{% endfor %}{% endblock %}
+{% block description %}Implementation of {{ algorithm.name }} in {% for impl in algorithm.implementations.all %}{{ impl.language.name }}{% if not forloop.last %},{% endif %}{% endfor %}{% endblock %}
+
+{% block head %}
+    <script src="{{ MEDIA_URL }}plugins/autosize/jquery.autosize.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/codemirror/lib/codemirror.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/codemirror/addon/search/searchcursor.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/codemirror/addon/search/match-highlighter.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/codemirror/addon/selection/active-line.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/codemirror/addon/mode/loadmode.js"></script>
+    <script src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ MEDIA_URL }}plugins/noty/layouts/top.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ MEDIA_URL }}plugins/noty/layouts/topLeft.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ MEDIA_URL }}plugins/noty/themes/default.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ MEDIA_URL }}js/jquery.hotkeys.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ MEDIA_URL }}js/bootstrap-wysiwyg.js"></script>
+    <link rel="stylesheet" href="{{ MEDIA_URL }}/css/font-awesome.css">
+    <link rel="stylesheet" href="{{ MEDIA_URL }}plugins/codemirror/lib/codemirror.css">
+{% endblock %}
+
+{% block base-content %}
+    <div class='page-fork'>
+        <div>
+            {% if can_save and merge_requests %}
+                <div class='block-fork-requests well'>
+                    <h4>Merge requests:</h4>
+                    {% for fork in merge_requests %}
+                        <div class='fork-request' id='merge_request{{ fork.id }}'>
+                            <i class="icon-random"></i>
+                            <a target='_blank' href='/fork/{{ fork.id }}'>{{ fork }}</a>
+                            {% for impl in fork.implementations.all %}
+                                <span class='label label-info'>{{ impl.language }}</span>
+                            {% endfor %}
+                            <span style='display: inline-block; width: 20px;'></span>
+                            <button data-mergeid='{{ fork.id }}' data-algoid='{{ algorithm.id }}' data-merge='yes' class='cmdMergeAccept btn btn-primary btn-mini'>Accept</button>
+                            <button data-mergeid='{{ fork.id }}' data-algoid='{{ algorithm.id }}' data-merge='no' class='cmdMergeDecline btn btn-danger btn-mini'>Decline</button>
+                        </div>
+                    {% endfor %}
+                    <br />
+                    <div>
+                        <b>Warning!</b> Currently, merging will only add new implementations
+                    </div>
+                </div>
+            {% endif %}
+            <div class='txt-name'>
+                <span for="name" class="pretext"><span class='label label-success'>Name</span></span><input id="name" type="text" placeholder="Algorithm Name" value='{{ algorithm.name }}'>
+                {% if can_save and not algorithm.verified %}
+                    {% if algorithm.verification_request %}
+                        <button class='btn btn-primary disabled btn-small'>Waiting for verification</button>
+                    {% else %}
+                        <button id='cmdBecomeStandard' data-algoid='{{ algorithm.id }}' class='btn btn-primary btn-small'>Become standard</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% if algorithm.fork_of %}
+                <div class='txt-fork'>
+                    <span class="pretext"><span class='label label-info'>Fork of</span>
+                    </span><a href="/fork/{{ algorithm.fork_of.id }}">{{ algorithm.fork_of.name|default:"<unnamed>" }}</a>
+                    {% if can_save %}
+                        {% if algorithm.merge_request %}
+                            <button class='btn btn-primary btn-small disabled'>Waiting for merge</button>
+                        {% else %}
+                            <button id='cmdMerge' data-algoid='{{ algorithm.id }}' class='btn btn-primary btn-small'>Merge into origin</button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+            <div class="txt-tags">
+                {% comment %}<span class="pretext"><span class='label label-warning'>Tags</span>
+                </span>{% endcomment %}<ul id="tags">
+                    {% for tag in tags %}
+                    <li>{{ tag }}</li>
+                    {% endfor %}
+                </ul></div>
+            <div style="clear: both"></div>
+        </div>
+       <div class="btn-toolbar" data-role="editor-toolbar" data-target="#description" style="display: none">
+          <div class="btn-group">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="icon-text-height"></i>&nbsp;<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+              <li><a data-edit="fontSize 5"><font size="5">Huge</font></a></li>
+              <li><a data-edit="fontSize 3"><font size="3">Normal</font></a></li>
+              <li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
+              </ul>
+          </div>
+          <div class="btn-group">
+            <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="icon-bold"></i></a>
+            <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="icon-italic"></i></a>
+            <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="icon-strikethrough"></i></a>
+            <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="icon-underline"></i></a>
+          </div>
+          <div class="btn-group">
+            <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="icon-list-ul"></i></a>
+            <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="icon-list-ol"></i></a>
+            <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="icon-indent-left"></i></a>
+            <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="icon-indent-right"></i></a>
+          </div>
+          <div class="btn-group">
+            <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="icon-align-left"></i></a>
+            <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="icon-align-center"></i></a>
+            <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="icon-align-right"></i></a>
+            <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="icon-align-justify"></i></a>
+          </div>
+          <div class="btn-group">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="icon-link"></i></a>
+                <div class="dropdown-menu input-append">
+                    <input class="span2" placeholder="URL" type="text" data-edit="createLink"/>
+                    <button class="btn" type="button">Add</button>
+            </div>
+            <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="icon-cut"></i></a>
+
+          </div>
+
+          <div class="btn-group">
+            <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="icon-picture"></i></a>
+            <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 41px; height: 30px; z-index: 100" />
+          </div>
+          <div class="btn-group">
+            <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="icon-undo"></i></a>
+            <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="icon-repeat"></i></a>
+          </div>
+        </div>
+        <div class='txt-description'>
+            <a href="javascript:void(0);" class="description-toggler" onclick="$('#description').wysiwyg({}); $('[data-role=editor-toolbar]').slideDown('fast'); $(this).hide(); return false;"><i class="icon-pencil"></i> Edit</a>
+            <div id="description-overlay"></div>
+            <div id="description">{{ algorithm.description|default:"Put description here<br/><br/><br/>"|safe}}</div>
+        </div>
+
+        <div class='panel-languages'>
+            <span class='label'>{{ implementation.language.name }}</span>
+            {% if implementations %}
+                <span class='other-caption'>Other implementations:</span>
+                {% for item in implementations %}
+                    <a class='link' href='/fork/{{ algorithm.id }}/{{ item.language.slug }}'>{{ item.language.name }}</a>
+                {% endfor %}
+            {% endif %}
+            {% if not_implemented %}
+            <div class="btn-group">
+                <button class='btn btn-small btn-success dropdown-toggle' data-toggle="dropdown">
+                    New implementation
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu">
+                    {% for item in not_implemented %}
+                        <li><a tabindex="-1" href="/implement/{{ algorithm.id }}/{{ item.id }}">{{ item.name }}</a></li>
+                    {% endfor %}
+                    {% if more_not_implemented %}
+                        {% if not_implemented %}<li class="divider"></li>{% endif %}
+                        <li><a tabindex="-1" href="/implement/{{ algorithm.id }}">More...</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <div style="clear:both"></div>
+
+        <textarea id="editor" readonly="false" placeholder="Code">{{source}}</textarea>
+        <br/><br/><br/><br/>
+    </div>
+
+
+    <script>
+        var cmdSave = $('#cmdSave');
+        var cmdFork = $('#cmdFork');
+        var cmdMerge = $('#cmdMerge');
+        var cmdBecomeStandard = $('#cmdBecomeStandard');
+        var txtDescription = $('#description');
+        var canSave = {% if can_save %}true{% else %}false{% endif %};
+
+        document.onkeydown = function(e){
+            if (e.which == 83 && e.ctrlKey){
+                save();
+                return false;
+            } else{
+                return true;
+            }
+        };
+
+        function show_error(message){
+            return new noty({
+                text: message,
+                layout: 'topLeft',
+                timeout: 3000,
+                type: 'error'
+            });
+        }
+
+        var is_saving = false;
+
+        function save(){
+            if (!canSave){
+                fork();
+                return;
+            }
+
+            if (is_saving) return;
+            is_saving = true;
+
+            var saving = new noty({
+                text:"Saving...",
+                layout: 'topLeft',
+                type: 'information',
+                animation: {speed:0, open: {height: 'toggle'}, close: {height: 'toggle'}}
+            });
+            var name = $('#name').val();
+            var description = $('#description').cleanHtml();
+            var tags = $("#tags").tagit("assignedTags").join();
+            var source = window.code_mirror.getValue();
+            cmdSave.addClass('disabled');
+            $.ajax({
+                url: '/save',
+                type: 'POST',
+                data: {
+                    'algo_id':'{{ algorithm.id }}',
+                    'code_id':'{{ implementation.id }}',
+                    'source': source,
+                    'name': name,
+                    'description': description,
+                    'tags': tags
+                }
+                })
+                .done(function(){
+                    is_saving = false;
+                    saving.close();
+                    cmdSave.removeClass('disabled');
+                    cmdSave.hide();
+                    window.edited = false;
+                })
+                .fail(function(){
+                    is_saving = false;
+                    saving.close();
+                    cmdSave.removeClass('disabled');
+                    show_error("Saving failed. Service is under maintance, wait several minutes, please");
+                });
+        }
+
+        function fork(){
+            var name = $('#name').val();
+            var description = $('#description').cleanHtml();
+            var tags = $("#tags").tagit("assignedTags").join();
+            var source = window.code_mirror.getValue();
+            var saving = new noty({
+                text:"Creating fork. Please, wait...",
+                type: 'information'
+            });
+            cmdSave.addClass('disabled');
+            cmdFork.addClass('disabled');
+            $.ajax({
+                url: '/fork',
+                type: 'POST',
+                data: {
+                    'algo_id':'{{ algorithm.id }}',
+                    'code_id':'{{ implementation.id }}',
+                    'source': source,
+                    'name': name,
+                    'description': description,
+                    'tags': tags
+                }
+            })
+            .done(function(algo_id){
+                cmdSave.removeClass('disabled');
+                cmdSave.hide();
+                window.edited = false;
+                window.location = '/fork/' + algo_id;
+            })
+            .fail(function(){
+                cmdSave.removeClass('disabled');
+                saving.close();
+            });
+        }
+
+        function allow_save(){
+            if (window.edited) return;
+            window.edited = true;
+            if (canSave){
+                cmdSave.show();
+            }
+            else{
+                cmdSave.hide();
+            }
+        }
+
+        function merge(){
+            var algo_id = $(this).data('algoid');
+            var merge_id = $(this).data('mergeid');
+            var ok = $(this).data('merge');
+            $('#merge_request' + merge_id).hide();
+            var merging = new noty({
+                text:"Merging. Please, wait...",
+                type: 'information'
+            });
+           $.ajax({
+                url: '/merge',
+                type: 'POST',
+                data: {
+                    'algo_id': algo_id,
+                    'merge_id': merge_id,
+                    'ok': ok
+                }
+            })
+            .done(function(ok){
+                merging.close();
+                window.location.reload();
+            }).fail(function(){
+                merging.close();
+            });
+        }
+
+        function request_merge(){
+            var algo_id = $(this).data('algoid');
+            cmdMerge.addClass("disabled");
+            cmdMerge.html('Waiting for merge');
+            $.ajax({
+                url: '/request_merge',
+                type: 'POST',
+                data: {
+                    'algo_id': algo_id
+                }
+            });
+        }
+
+        function request_become_standard(){
+            var algo_id = $(this).data('algoid');
+            cmdBecomeStandard.addClass("disabled");
+            cmdBecomeStandard.html('Waiting for verification');
+            $.ajax({
+                url: '/request_become_standard',
+                type: 'POST',
+                data: {
+                    'algo_id': algo_id
+                }
+            });
+        }
+
+        function initialize_code_editor(){
+            var area = document.getElementById('editor');
+            CodeMirror.modeURL = "{{ MEDIA_URL }}plugins/codemirror/mode/%N/%N.js";
+            var mirror = CodeMirror.fromTextArea(area, {
+                lineNumbers: true,
+                viewportMargin: Infinity,
+                autofocus: true,
+                readOnly: false,
+                highlightSelectionMatches: true,
+                styleActiveLine: true,
+                lineWrapping: false
+            });
+            var mode = "{{ family }}";
+            mirror.setOption("mode", "{{ language }}");
+            mirror.on('change', allow_save);
+            CodeMirror.autoLoadMode(mirror, mode);
+            //removed mirror.setOption('theme', 'xq-light');
+            window.edited = false;
+            window.code_mirror = mirror;
+        }
+
+        initialize_code_editor();
+        txtDescription.keydown(allow_save);
+        $('#name').keydown(allow_save);
+
+        function initialize(){
+            cmdSave.popover({title:'Hot key', content:'<b>Ctrl+S</b> - save changes', html:true, trigger:'hover', placement:'bottom'});
+            $('#cmdBecomeStandard').popover({title:'Become standard alogirthm', content:'If this is one of the generic alogrithms, standard of some kind, mark it so. <p>All standard algorithms are available on the home page</p>', html:true, trigger:'hover', placement:'bottom'});
+            $('#cmdMerge').popover({title:'Merge your fork into the origin', content:'Add your new implementation to original algorithm', html:true, trigger:'hover', placement:'bottom'});
+            cmdFork.popover({title:'Create editable copy of algorithm', content:'You believe you could make this algorithm work better? Fork and do it!', html:true, trigger:'hover', placement:'bottom'});
+
+            txtDescription.mouseenter(function(){$('#description-overlay').animate({'opacity': 1}, 300);});
+            txtDescription.mouseleave(function(){$('#description-overlay').animate({'opacity': 0.5}, 300);});
+            cmdSave.click(save);
+            cmdFork.click(fork);
+            $("#tags").tagit({
+                placeholderText: 'Add tag',
+                allowSpaces: true,
+                caseSensitive: false,
+                tagLimit: 12,
+                afterTagRemoved: allow_save,
+                afterTagAdded: allow_save,
+                availableTags: [
+                    {% for tag in all_tags %}'{{ tag }}',{% endfor %}
+                ]
+            });
+            cmdSave.hide();
+            $('.cmdMergeAccept').click(merge);
+            $('.cmdMergeDecline').click(merge);
+            cmdMerge.click(request_merge);
+            cmdBecomeStandard.click(request_become_standard);
+            window.edited = false;
+        }
+
+        $(initialize);
+
+    </script>
+{% endblock  %}

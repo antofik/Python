@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+    </style>
+    <script type="text/javascript" src="../media/js/coffee-script.js"></script>    
+    <script type='text/javascript'>
+    </script>
+    <script type='text/coffeescript'>
+    	class FractalTree
+    		constructor: ->
+		    	canvas = document.getElementById('canvas')
+		    	@ctx = canvas.getContext('2d')
+
+		    setColor: (color) ->
+		    	@ctx.strokeStyle = color
+		    setRgbColor: (r,g,b) ->
+		    	@ctx.strokeStyle = 'rgb(' + r + ','+ g + ','+ b + ')'
+
+		   	line: (x1, y1, x2, y2) ->
+		   		@ctx.beginPath()
+		   		@ctx.moveTo(x1, y1)
+		   		@ctx.lineTo(x2, y2)
+		   		@ctx.closePath()
+		   		@ctx.stroke()
+
+		   	generate: (x,y,a,l) =>
+                if l<8 then return
+                x1 = Math.round(x + l * Math.cos(a))
+                y1 = Math.round(y + l * Math.sin(a))
+                p = if l > 100 then 100 else l
+                if p < 40
+                    if Math.random()<0.5
+                        @setColor('#0f0')
+                    else
+                        @setColor('green')
+                    for i in [0..3]
+                        @line(x + i, y, x1 ,y1)
+                else
+                    @setColor('rgb(255,0,0)')
+                for i in [0..(p/6)]
+                    @line(x + i - (p/12), y, x1, y1)
+
+                for i in [0..9 - Math.round(Math.random()*9)]
+                    s = Math.random()*(l - l/6) + (l / 6)
+                    a1 = a + 1.6* (0.5 - Math.random())
+                    x1 = Math.round(x + s * Math.cos(a))
+                    y1 = Math.round(y + s * Math.sin(a))
+                    @generate(x1, y1, a1, p - 5 - Math.round(Math.random()*30))
+
+    	
+    	tree = new FractalTree()
+    	tree.generate(320,480, 3*Math.PI/2, 200)
+    </script>
+</head>
+<body>
+	<canvas width='1000' height='1000' id='canvas'></canvas>
+</body>
+</html>

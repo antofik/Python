@@ -1,0 +1,19 @@
+{% extends "plugins/catalog/base_catalog.html" %}
+
+{% load smart_load sekizai_tags catalog_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+{% block catalog-content %}
+
+    <div class='content'>
+        {% show_catalog_item selected_item %}
+    </div>
+
+{% endblock %}
+
+{% addtoblock "js" %}
+    <script type="text/javascript">
+        $(function(){
+        });
+    </script>
+{% endaddtoblock %}

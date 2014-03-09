@@ -1,0 +1,202 @@
+{% extends "base_decorated.html" %}
+
+{% block head %}
+   {{ block.super }}
+   <script type="text/javascript" src="http://userapi.com/js/api/openapi.js?52"></script>   
+   <script type="text/javascript" src="http://vk.com/js/api/share.js?11" charset="windows-1251"></script>
+   <script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery-color/jquery.color.js"></script>
+{% endblock %}
+
+{% block jsscript %}
+    {{ block.super }}
+    <script type="text/javascript">
+
+    $(function(){
+		VK.init({apiId: 3069937, onlyWidgets: true});
+		VK.Widgets.Like("vk_like", {type: "mini", height: 24});	
+		
+		$('.dress-preview').mouseenter(function(container){
+			$('.panel-details', $(this)).fadeIn('fast');
+		});
+		$('.dress-preview').mouseleave(function(container){
+			$('.panel-details', $(this)).fadeOut('fast');
+		});
+        
+        var filter_is_shown = false;
+        $('.btn-filter').click(function(){
+            if (filter_is_shown){
+                $('.filter-panel').slideUp('fast');
+            }else{
+                $('.filter-panel').slideDown('fast');
+            }                        
+            filter_is_shown = !filter_is_shown;
+        });
+        
+        $('.filter-control').change(function(){
+            var type = $('#id_type').val();
+            var category = $('#id_category').val();
+            filter_photos(type, category);
+            show_photos();
+        });        
+        
+        function filter_photos(type, category){
+            $('.dress-preview').each(function(index, photo){
+                var _type = $(photo).data('type');
+                var _category = $(photo).data('category');
+                $(photo).removeClass('filtered');
+                if (type.indexOf(_type)!=-1 && category.indexOf(_category)!=-1) $(photo).addClass('filtered');
+            });
+        }
+        
+        var packetSize = 16;
+        var visiblePhoto = packetSize + 1;
+        
+        function show_photos(){
+            var shown = 0;
+            visiblePhoto = 1;
+            $('.dress-preview').each(function(index, photo){
+                if ($(photo).hasClass('filtered') && shown<packetSize) {
+                    show_photo(photo);
+                    packetSize++;
+                    visiblePhoto++;
+                } else {
+                    $(photo).addClass('hidden');
+                }
+            });
+        }
+        
+        $(window).scroll(function () {             
+            if ($(window).scrollTop() > $(document).height() - $(window).height() - 400){
+                for (var i=0;i<packetSize;i++){
+                    var photo = $('.photo'+visiblePhoto);
+                    if (!$(photo).hasClass('filtered')) continue;
+                    show_photo(photo);
+                    visiblePhoto++;
+                }
+            }
+        });
+        
+        function show_photo(photo){
+            $(photo).removeClass('hidden');
+            var container = $('.image-container', photo);
+            $('.image-container', photo).css('background-image', $('.image-container', photo).data('style'));
+        }
+    });
+    </script>
+{% endblock %}
+
+{% block toolbar-top %}
+	<a href='/dress/new' class='btn-create btn btn-primary btn-large'>Разместить объявление</a>
+	<button class='btn-filter btn btn-warning btn-large' data-toggle="button">Фильтры</button>
+	<div id='vk_share' class='.hidden-tablet .hidden-phone'>
+	<script type="text/javascript"><!--
+		document.write(VK.Share.button('http://{{ vk_share_url }}',{url: 'http://{{ vk_share_url }}', type: "button", text: "Рассказать друзьям"}));
+	--></script>
+	</div>
+	<div id="vk_like" class='.hidden-tablet .hidden-phone'></div>
+{% endblock %}
+
+{% block toolbar-bottom %}
+	<a href='/dress/new' class='btn-create btn btn-primary btn-large'>Разместить объявление</a>
+{% endblock %}
+
+{% block content %}
+
+{% load thumbnail %}
+
+
+<div class="row">        
+	<div class="span12 main-page-header">
+		<div class="well">
+		  <img class='logo' src='{{ MEDIA_URL}}images/logo.png' />          
+          <h1 class='hidden'>Каталог бальных платьев</h1>
+          <br/>
+		  <p>В нашем каталоге вы <span class='label label-success'>найдёте платья,</span> которые давно ищете
+          <br/>Здесь платья обретают <span class='label label-warning'>новых хозяек</span> и получают вторую жизнь на паркете
+          <br/>Быстрее <span class='label label-info'>открывайте</span> каталог <span class='label label-info'>и погружайтесь</span> в мир бальных платьев
+          <br/>
+          </p>
+		</div>
+	</div>
+</div>  
+  
+<div class="row filter-panel" style='display:none'>
+    <div class='background span12'><div class='holder'></div></div>
+    <div class='span3'>
+        <div class='filter-container'>
+            <span class='caption'>Тип платья:</span>
+            <select name="type" id="id_type" class='filter-control'>
+                <option value="{{ types|join:',' }}">Все</option>
+                {% for type in types %}
+                <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class='span3'>
+        <div class='filter-container'>
+            <span class='caption'>Категория:</span>
+            <select name="category" id="id_category" class='filter-control'>
+                <option value="{{ categories|join:',' }}">Любая</option>
+                {% for category in categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class='span6 hidden'>
+        <div class='filter-container'>
+            Фильтры, фильтры, фильтры
+        </div>
+    </div>
+</div>
+  
+<div class="row main-photos">
+    <div class='span12'>
+	{% for dress in dresses %} 
+	<div class='dress-preview filtered photo{{ forloop.counter }} {% if forloop.counter > 16 %}hidden{% endif %}' data-type='{{ dress.type }}' data-category='{{ dress.category }}'>		
+        {% if forloop.counter > 16 %}
+        <div class='busy-indicator'>
+            <img src='{{ MEDIA_URL }}images/29.gif' />
+        </div>
+        {% endif %}
+		<div class="photo" >
+			{% thumbnail dress.main_photo "360" as im %}                    
+				<a rel='photo[gallery]' href='{{ dress.main_photo.url }}' data-title='{{ dress.main_photo_description }}'>
+                    {% if forloop.counter > 16 %}
+                        <div class='image-container' data-style="url({{ im.url }})"alt=""></div>
+                    {% else %}
+                        <div class='image-container' style="background-image:url({{ im.url }});" alt=""></div>
+                    {% endif %}
+				</a>
+			{% endthumbnail %}                                        
+		</div>        
+        <div class='panel-details' style='display:none'>
+			<div class='to-right'>
+				<span class='caption label label-inverse'>Просмотров:</span>
+				<span class='value label label-info'>{{ dress.views }}</span>
+			</div>
+			<div class='to-right'>
+				<span class='caption label label-inverse'>Хотят примерить:</span>
+				<span class='value label label-info'>{{ dress.buy_tries }}</span>
+			</div>
+			<div class='to-left'>
+				<span class='caption label label-inverse'>Созданно:</span>
+				<span class='value label label-info'>{{ dress.created|date:"d M H:i" }}</span>
+			</div>
+        </div>
+        <div class='toolbar'>
+            <span>
+                <a href='/dress/{{ dress.id }}' class='btn-tryit btn btn-info btn-small'>Подробнее</a>
+            </span>
+            <div class='info'>
+                <div><span class='caption'>Категория: </span><span class='value'>{{ dress.category }}</span></div>
+                <div><span class='caption'>Камни:</span><span class='value'>{{ dress.svarovsky }}</span></div>
+            </div>
+        </div>
+	</div>
+	{% endfor %}
+    </div>
+</div>
+    
+{% endblock %}

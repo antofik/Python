@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/jquery-color/jquery.color.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/jquery.noty.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/center.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/layouts/top.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}plugins/noty/themes/default.js"></script>
+{% endblock %}
+
+
+{% block jsscript %}
+    <script type="text/javascript">
+    </script>
+{% endblock %}
+
+{% block base-content %}
+
+    <h1>Phones</h1>
+    {% for i in phones %}
+        {{ i.raw }}<br/>
+    {% endfor %}
+
+    <h1>Mails</h1>
+    {% for i in emails %}
+        {{ i.raw }}<br/>
+    {% endfor %}
+
+
+{% endblock %}

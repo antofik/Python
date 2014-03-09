@@ -1,0 +1,24 @@
+{% load smart_load catalog_tags %}
+{% load thumbnail from sorl.thumbnail %}
+
+<div class="last-article">
+    <div class='header'>Статьи</div>
+    <div class='preview'>
+        <div>
+            <span class="date">{{ item.date_added|date:"d M Y"|default:"15 Янв 2013" }}</span>
+        </div>
+        <a href="{{ item.get_absolute_url }}">
+            {% thumbnail item.image.file.name "120x80" format="PNG" as im %}
+                <img width='{{ im.width }}' height='{{ im.height }}' src="{{ im.url }}" />
+            {% endthumbnail %}
+        </a>
+    </div>
+    <div>
+        <a href="{{ item.get_absolute_url }}" class='caption'>{{ item.name }}</a>
+    </div>
+    <span class='description'>{{ item.short_description }}</span>
+    <div class='info'>
+        <a href="{{ item.get_absolute_url_of_list }}" class='all'>Все статьи</a>
+        <a class='read-more' href="{{ item.get_absolute_url }}">Читать далее...</a>
+    </div>
+</div>

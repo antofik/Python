@@ -1,0 +1,26 @@
+﻿{% extends "base_with_menu.html" %}
+
+{%block content %}
+{% load thumbnail %}
+<div class='page_partners'>
+	<h1>Наши партнёры</h1>
+	{% for item in items %}
+		<div class="wrap">
+			<div class="mov"></div>
+			<div class="container">
+				<div class="image-wrap">
+					<table cellpadding="0" cellspacing="0"><tr><td valign="middle">
+					<img style='display:none' src="/media/{{ item.image }}" />
+						{% thumbnail item.image "100x80" format="PNG" as im %}
+							<img src="{{ im.url }}" />
+                        {% endthumbnail %}   					
+					</td></tr></table>
+				</div>
+				<a href='{{ item.url }}' class="title">{{ item.title }}</a>
+			</div>
+		</div>
+		<div style="clear: both"></div>
+	{% endfor %}
+</div>	
+{% endblock %}
+

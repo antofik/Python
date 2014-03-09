@@ -1,0 +1,27 @@
+{% load i18n thumbnail sekizai_tags catalog_tags %}
+
+<div class="cmsplugin_filer_folder_list" id="folder_{{ instance.id }}">
+    <ul>
+        {% for files in folder_files %}
+            <li>
+                <a href="{{ files.url }}"><img width="48" height="48" src='{{ files.url|file_image }}' />
+                    {{ files }}
+                </a>
+                {{ files.description|default:"" }}
+                <span>{{ files.size|filesizeformat }}</span>
+            </li>
+        {% endfor %}
+        {% if folder_images %}
+            {% for image in folder_images %}
+                <li>
+                    <a href="{{ image.url }}">
+                        <img width="48" height="48" src='{% thumbnail image.file 32x32 crop="True" upscale="True" %}' alt="{{ image.label }}" />
+                        {{ image }}
+                    </a>
+                    {{ image.description|default:"" }}
+                    <span>{{ image.size|filesizeformat }}</span>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>

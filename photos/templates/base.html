@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=9">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Фотографии турниров бальный танцев от mfst.pro</title>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/stylesheet.css?2" media="all" />
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/bootstrap/css/bootstrap.css" media="all" />	
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/prettyPhoto/css/prettyPhoto.css" media="all" />	
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}plugins/bootstrap/css/bootstrap-responsive.css" media="all" />	
+	<!--  <script type="text/javascript" src="{{ MEDIA_URL }}js/cssrefresh.js"></script>  -->
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="{{ MEDIA_URL }}plugins/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="{{ MEDIA_URL }}plugins/prettyPhoto/js/jquery.prettyPhoto.js"></script>
+	{% block head %} {% endblock %}
+
+    {% block jsscript %} {% endblock %}
+
+    <script type="text/javascript">
+
+        $(function(){
+			$("a[rel^='photo']").prettyPhoto({social_tools:'', deeplinking: false});
+        });
+		
+		$.ajaxSetup({
+		  data: {csrfmiddlewaretoken: '{{ csrf_token }}' }
+		});
+    </script>
+    
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22879195-6']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>    
+    
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">    
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"> 
+          <a href='http://mfst.pro'>
+            <img class='logo-mfstpro' src='{{ MEDIA_URL }}images/logo_mfstpro.png' />
+          </a>          
+          <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+          <a class="btn btn-navbar hidden" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>          
+          <a class="brand" href="/">Бальные танцы - фотографии турниров</a>
+          
+     
+          <div class="nav-collapse hidden">        
+            <form class="navbar-search inline-form pull-right">
+              <div class="control-group">
+                <div class="input-append">
+                  <input type="text" class="search-query" placeholder="Поиск..."><button type="submit" class="btn btn-small"><i class="icon-search"></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+     
+        </div>
+      </div>
+    </div>
+
+    <div class='page_background'>
+    {% block base-content %}{% endblock %}
+    </div>
+    
+</body>
+</html>

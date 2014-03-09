@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        html, body{
+            margin: 0px;
+            padding: 0px;            
+        }
+        .canvas{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            margin: auto;
+            width: 800px;
+            height: 800px;
+        }
+        .work_canvas{
+            background: transparent;
+            display: none;
+        }
+        .hidden_canvas{
+            background: transparent;            
+        }
+    </style>
+    <script type='text/javascript' src='../media/js/jquery-1.7.2.js'></script>
+    <script type='text/javascript' src='../media/js/coffee-script.js'></script>
+    <script type='text/coffeescript'>
+
+initialize = ->
+    @canvas = $('.work_canvas')
+    @hidden = $('.hidden_canvas')
+    @width = @canvas.width()
+    @height = @canvas.height()
+    @g = @canvas[0].getContext('2d')
+    @h = @hidden[0].getContext('2d')
+debug = 0
+class point
+    x:  0,  y: 0 #position
+    vx: 0, vy: 0 #speed
+    sx: 0, sy: 0 #start point
+    spread: 1
+    constructor: (@x, @y, @color) ->
+        @sx = @x
+        @sy = @y
+        @spread = 1+Math.random()
+    draw: (h) ->
+        h.globalAlpha = 1
+        h.beginPath()
+        h.fillStyle = @color
+        h.rect(@x, @y, 2, 2)
+        h.closePath()
+        h.fill()
+    force_to_point: (magnitude, x, y, dt, dacceleration, minspeed) ->
+        dx = x-@x
+        dy = y-@y
+        norm = Math.sqrt(dx*dx+dy*dy)
+        if norm<100
+            norm=100             
+        fx = magnitude*dx/norm
+        fy = magnitude*dy/norm
+        @force(fx, fy, dt, dacceleration, minspeed)                
+    force_back: (magnitude, dt, dacceleration, minspeed = 0) ->
+        @force_to_point(magnitude, @sx, @sy, dt, dacceleration, minspeed)
+    force: (fx, fy, dt, dacceleration, minspeed) ->
+        @vx += fx*dt
+        @vy += fy*dt
+        if Math.abs(@vx)>minspeed or Math.abs(@vy)>minspeed
+            @vx *= 1 / (1+dt*dacceleration)
+            @vy *= 1 / (1+dt*dacceleration)
+        else
+            if Math.random()>.9
+                alpha = Math.PI / 50
+                vx2 = (@vx * Math.cos(alpha)) + (@vy*Math.sin(alpha))
+                vy2 = (-@vx * Math.sin(alpha)) + (@vy*Math.cos(alpha))                    
+                @vx = vx2
+                @vy = vy2
+        @x += @vx*@spread*dt
+        @y += @vy*@spread*dt                
+    
+points = []
+   
+draw_text = (callback) ->
+    image = new Image()
+    $('.container').append(image)
+    image.onload = =>            
+        width = $(image).width()
+        height = $(image).height()
+        $(image.hide)
+        @h.drawImage(image, 0, 0, width, height)
+        @data = @h.getImageData(0, 0, width, height)
+        mean = 2
+        for j in [0...@data.height] by mean
+            for i in [0...@data.width] by mean
+                average = 0
+                a_r = 0
+                a_g = 0
+                a_b = 0
+                a_a = 0
+                for y in [j...j+mean]
+                    for x in [i...i+mean]                            
+                        index = 4*(j*@data.width+i)
+                        r = @data.data[index]
+                        g = @data.data[index+1]
+                        b = @data.data[index+2]
+                        a = @data.data[index+3]
+                        a_r += r
+                        a_b += b
+                        a_g += g
+                        a_a += a
+                        average += (r+g+b) / 3 * (a / 255)
+                average = average/(mean*mean)
+                if average>10
+                    a_r = a_r/(mean*mean)
+                    a_g = a_g/(mean*mean)
+                    a_b = a_b/(mean*mean)
+                    a_a = a_a/(mean*mean)
+                    color = "rgba("+a_r+","+a_g+","+a_b+","+a_a / 255+")"
+                    p = new point(i/mean*2,j/mean*2, color)
+                    points.push p
+                    
+        callback()
+    image.src = 'asprogram.png'                                
+    #image.src = 'free-alphabet-clipart-a.jpg'                                
+    
+class swarm_creator
+    points: []
+    toPoint: true
+    time:  30
+    speed: 10
+    #force: 0.00001
+    #dacceleration: 0.001
+    #minspeed: 0.005
+    force: 0.00001
+    dacceleration: 0.001
+    minspeed: 0.005
+    x: 100
+    y: 100
+    constructor: (@canvas, @width, @height) ->
+    calc: ->
+        for p in points
+            if @toPoint
+                p.force_to_point(@force/10, @x, @y, @speed*@time, @dacceleration, @minspeed)
+            else
+                p.force_back(@force, @speed*@time, @dacceleration)
+    draw: ->
+        for p in points
+            p.draw(@canvas)
+    clear: ->
+        @canvas.clearRect(0, 0, @width, @height)
+        
+    
+initialize()   
+swarm = new swarm_creator(@h, @width, @height)
+draw_text ->      
+    swarm.draw()
+    setInterval ->
+            swarm.calc()
+            swarm.clear()
+            swarm.draw()                        
+    ,swarm.time
+ 
+$('html').click ->
+    swarm.toPoint = not swarm.toPoint
+width_proportion = @width/@hidden.attr('width')
+height_proportion = @height/@hidden.attr('height')
+$('html').mousemove (e) =>
+    swarm.x = e.pageX/width_proportion
+    swarm.y = e.pageY/height_proportion
+                
+    #console.log swarm.x + ":" + swarm.y
+    if swarm.x<10 or swarm.x>@hidden.attr('width')-10 or swarm.y<10 or swarm.y>@hidden.attr('height')-10
+        swarm.x = 100
+        swarm.y = 100
+
+    </script>
+</head>
+<body>
+    <div class='container'>
+        <h1>test</h1>
+    </div>
+    <canvas class='canvas work_canvas'></canvas>
+    <canvas width='400' height='400' class='canvas hidden_canvas'></canvas>
+</body>
+</html>

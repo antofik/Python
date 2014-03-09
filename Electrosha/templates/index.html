@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if not done %}
+        <h3>Wait...</h3>
+        <h4>Number of products: {{ count_done }}/{{ count }}</h4>
+        <h4>Speed: {{ speed_done }}/{{ speed }} products/sec</h4>
+    {% endif %}
+    <ul>
+    {% for item in proxy %}
+        <li>
+            {{ item.host }}({{ item.count }}req, {{ item.sleep }} sec in wait) {{ item.task|default:"ready" }}
+        </li>
+    {% endfor %}
+    </ul>
+    <ul>
+    {% for main_category in data %}
+        <li>
+            <h3>{{ main_category.name }}</h3>
+            <ul>
+            {% for category in main_category.categories %}
+                <li>{{ category.name }} {% if category.items %}({{ category.items|length }}){% endif %}</li>
+{% comment %}
+                <ul>
+                    {% for item in category.items %}
+                        <li>
+                            <b>name:</b>{{ item.name }} <br />
+                            <b>image link:</b>{{ item.image.link }} <br />
+                            <b>link:</b>{{ item.link }} <br />
+                            <b>keywords_en:</b>{{ item.keywords_en }} <br />
+                            <b>keywords_ru:</b>{{ item.keywords_ru }} <br />
+                            <b>price:</b>{{ item.price }} <br />
+                            <b>discount:</b>{{ item.discount }} <br />
+                            <b>discount time:</b>{{ item.discounttime }} <br />
+                            <b>specifics:</b>{{ item.specifics }} <br />
+                            <b>specifics_ru:</b>{{ item.specifics_ru|safe }} <br />
+                            <b>packaging:</b>{{ item.packaging }} <br />
+                            <b>shipping:</b>{{ item.shipping }} <br />
+                            <b>information_en:</b>{{ item.information_en }} <br />
+                            <b>information_ru:</b>{{ item.information_ru }} <br />
+                            <b>images:</b> {% for image in item.images %}{{ image.link }}, {% endfor %} <br />
+                            <b>description:</b><pre style='color:gray'>{{ item.description_en }}</pre> <br />
+                            <b>description_ru:</b><pre style='color:gray'>{{ item.description_ru }}</pre> <br />
+                        </li>
+                    {% endfor %}
+                </ul>
+{% endcomment %}
+            {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

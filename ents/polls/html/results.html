@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Результаты голосований {{ poll.question }}{% endblock %}
+{% block header %}
+    <h1>{{ poll.question }} - результаты</h1>
+{% endblock %}
+{% block content %}
+    {{ sum }}
+    <a href="/test/">Назад</a>
+    <br />
+    <table>
+        {% for choice in choices %}
+            <tr>
+                <td>{{ choice.votes }}</td>
+                <td>{{ choice.choice_text }}</td>
+                <td style="width: 200px">
+                    <div class="progress" style="margin-bottom: 0px">
+                      <div class="bar" style="width: {% widthratio choice.votes sum 100 %}%;"></div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

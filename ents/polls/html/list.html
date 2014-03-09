@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} preved medved {% endblock %}
+{% block content %}
+    <table border=1>
+        {% for poll in polls %}
+            <tr>
+                <td><a href="{{ poll.url }}">{{ poll.id }}</a></td>
+                <td><a href="{{ poll.url }}">{{ poll.question }}</a></td>
+                <td><a href="/test/results/{{ poll.id }}/">результаты</a></td>
+                <td>{{ poll.pub_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

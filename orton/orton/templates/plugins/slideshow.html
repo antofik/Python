@@ -1,0 +1,57 @@
+{% load smart_load sekizai_tags %}
+{% load thumbnail from sorl.thumbnail %}
+<div class='slideshow-container instance{{ instance.id }}'>
+    <div class='slideshow {% if instance.show_weather %}slideshow-weather{% endif %}'>
+        {% for file in instance.images.all_files.all %}
+            {% if instance.show_weather %}
+                {% thumbnail file.file.name "700x250" crop="center" format="PNG" as im %}
+                    <img {% if not forloop.first %}style='display:none'{% endif %} class='image image{{ forloop.counter }}' src="{{ im.url }}" alt="" />
+                {% endthumbnail %}
+            {% else %}
+                {% thumbnail file.file.name "960x250" crop="center" format="PNG" as im %}
+                    <img {% if not forloop.first %}style='display:none'{% endif %} class='image image{{ forloop.counter }}' src="{{ im.url }}" alt="" />
+                {% endthumbnail %}
+            {% endif %}
+        {% endfor %}
+        <ul class='switcher-container'>
+            {% for file in instance.images.all_files.all %}
+                <li>
+                    <div data-target='.image{{ forloop.counter }}' class='marker marker{{ forloop.counter }}{% if forloop.first %} selected{% endif %}'>
+                        <div class='marker-content'></div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if instance.show_weather %}
+        {% include "plugins/weather.html" %}
+    {% endif %}
+</div>
+
+{% addtoblock "js" %}
+    <script type="text/javascript">
+        $(function(){
+            var index = 1;
+            var delay = 0;
+            setInterval(function(){
+                setTimeout(function(){
+                    $('.instance{{ instance.id }} .image' + index).fadeOut();
+                    index++;
+                    if (index>{{ instance.images.all_files.all|length }}) index = 1;
+                    $('.instance{{ instance.id }} .image' + index).fadeIn();
+                    $('.instance{{ instance.id }} .marker').removeClass('selected');
+                    $('.instance{{ instance.id }} .marker' + index).addClass('selected');
+                }, delay);
+            }, {{ instance.delay }})
+
+            $('.instance{{ instance.id }} .switcher-container .marker').click(function(){
+                var target = $(this).data('target');
+                delay = 3000;
+                $('.instance{{ instance.id }} .image').fadeOut();
+                $('.instance{{ instance.id }} ' + target).fadeIn();
+                $('.instance{{ instance.id }} .marker').removeClass('selected');
+                $(this).addClass('selected');
+            });
+        });
+    </script>
+{% endaddtoblock %}
